@@ -11,24 +11,16 @@
     :root {
       --sur: #D85A30;
       --sous: #3B8C4E;
-      --sur-bg: rgba(216,90,48,0.18);
-      --sous-bg: rgba(59,140,78,0.18);
-      --bg: #0e0e0e;
-      --cat-bg: #0e0e0e;
-      --surface: rgba(0,0,0,0.35);
-      --border: rgba(255,255,255,0.08);
-      --text: #f5f5f0;
-      --muted: rgba(245,245,240,0.45);
+      --cat-bg: #e8e0d5;
+      --cat-text: #111;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     html, body {
-      height: 100%; overflow: hidden;
-      background: var(--cat-bg);
-      color: var(--text);
+      height: 100%;
+      overflow: hidden;
       font-family: 'DM Sans', sans-serif;
-      transition: background 0.6s ease;
     }
 
     .app {
@@ -40,20 +32,20 @@
       position: relative;
       overflow: hidden;
       background: var(--cat-bg);
-      transition: background 0.6s ease;
+      transition: background 0.5s ease;
     }
 
-    /* HEADER */
+    /* HEADER — couleur du thème */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.1rem 1.25rem 0.6rem;
+      padding: 1rem 1.25rem 0.5rem;
       flex-shrink: 0;
       position: relative;
-      z-index: 10;
-      background: #fff;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      z-index: 20;
+      background: var(--cat-bg);
+      transition: background 0.5s ease;
     }
     .logo {
       font-family: 'Syne', sans-serif;
@@ -62,27 +54,31 @@
       letter-spacing: -0.5px;
       color: #111;
     }
-    .logo span { color: #111; }
     .votes-badge {
       font-size: 12px;
-      color: #888;
+      color: rgba(0,0,0,0.45);
       display: flex;
       align-items: center;
       gap: 5px;
     }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sous); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #111;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
-    /* CATEGORIES */
+    /* CATEGORIES — couleur du thème */
     .cats {
       display: flex;
       gap: 6px;
-      padding: 0.6rem 1.25rem 0.75rem;
+      padding: 0 1.25rem 0.75rem;
       overflow-x: auto;
       scrollbar-width: none;
       flex-shrink: 0;
-      background: #fff;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: var(--cat-bg);
+      transition: background 0.5s ease;
     }
     .cats::-webkit-scrollbar { display: none; }
     .pill {
@@ -92,8 +88,8 @@
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      border: 1px solid rgba(0,0,0,0.12);
-      color: #666;
+      border: 1.5px solid rgba(0,0,0,0.2);
+      color: rgba(0,0,0,0.55);
       background: transparent;
       transition: all 0.2s;
       font-family: 'DM Sans', sans-serif;
@@ -104,100 +100,56 @@
       border-color: #111;
     }
 
-    /* SWIPE ZONE */
-    .swipe-area {
+    /* CARD — plein écran */
+    .card-zone {
       flex: 1;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       min-height: 0;
     }
 
-    .axis-label {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      pointer-events: none;
-      transition: opacity 0.2s, transform 0.2s;
-      z-index: 20;
-    }
-    .axis-label.top { top: 8px; color: var(--sur); opacity: 0.4; }
-    .axis-label.bottom { bottom: 8px; color: var(--sous); opacity: 0.4; }
-    .axis-label .chevron { font-size: 14px; }
-
-    .pulling-up .axis-label.top { opacity: 1; transform: translateX(-50%) scale(1.1); }
-    .pulling-down .axis-label.bottom { opacity: 1; transform: translateX(-50%) scale(1.1); }
-
-    .card-zone {
-      position: relative;
-      width: calc(100% - 2rem);
-      height: 100%;
-      max-height: 500px;
-    }
-
-    /* CARDS */
     .card {
       position: absolute;
       inset: 0;
-      border-radius: 24px;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       cursor: grab;
       user-select: none;
       touch-action: none;
       will-change: transform;
+      overflow: hidden;
     }
     .card:active { cursor: grabbing; }
+
     .card.back {
-      transform: scale(0.94) translateY(16px);
+      transform: scale(0.97) translateY(10px);
       opacity: 0.5;
       z-index: 0;
       pointer-events: none;
     }
     .card.front { z-index: 1; }
 
+    /* PHOTO — haut de la carte */
     .card-photo {
-      position: absolute;
-      inset: 0;
+      flex: 1;
+      position: relative;
       overflow: hidden;
+      min-height: 0;
     }
     .card-photo img {
       width: 100%; height: 100%;
       object-fit: cover;
       object-position: center;
       display: block;
-      transition: transform 0.4s ease;
     }
-    .card.front:active .card-photo img { transform: scale(1.02); }
     .card-photo-fallback {
       width: 100%; height: 100%;
-      background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+      background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
     }
 
-    .card-gradient {
+    /* HINT overlays */
+    .hint-over {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.85) 0%,
-        rgba(0,0,0,0.3) 45%,
-        rgba(0,0,0,0.05) 100%
-      );
-    }
-
-    .card-overlay {
-      position: absolute;
-      inset: 0;
-      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -207,58 +159,79 @@
       transition: opacity 0.15s;
       pointer-events: none;
       z-index: 5;
-    }
-    .overlay-sur { background: rgba(216,90,48,0.5); }
-    .overlay-sous { background: rgba(59,140,78,0.5); }
-    .overlay-label {
       font-family: 'Syne', sans-serif;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 800;
       color: #fff;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
     }
-    .overlay-arrow { font-size: 22px; color: rgba(255,255,255,0.8); }
+    .hint-sur { background: rgba(216,90,48,0.45); }
+    .hint-sous { background: rgba(59,140,78,0.45); }
+    .show-sur .hint-sur { opacity: 1; }
+    .show-sous .hint-sous { opacity: 1; }
 
-    .show-sur .overlay-sur { opacity: 1; }
-    .show-sous .overlay-sous { opacity: 1; }
-
+    /* BLOC TEXTE BAS — couleur thème */
     .card-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 1.5rem 1.5rem 1.75rem;
-      z-index: 3;
+      background: var(--cat-bg);
+      transition: background 0.5s ease;
+      padding: 1rem 1.25rem 1.25rem;
+      flex-shrink: 0;
     }
     .card-cat {
       font-size: 10px;
       font-weight: 500;
-      color: rgba(255,255,255,0.55);
+      color: rgba(0,0,0,0.4);
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .card-name {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(28px, 7vw, 38px);
+      font-size: clamp(26px, 7vw, 34px);
       font-weight: 800;
-      color: #fff;
+      color: #111;
       line-height: 1.05;
       letter-spacing: -1px;
     }
 
-    /* LOADING / EMPTY */
+    /* AXIS LABELS */
+    .axis-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 10;
+      color: rgba(0,0,0,0.3);
+    }
+    .axis-label.top { top: 10px; }
+    .axis-label.bottom { bottom: 10px; }
+
+    .card-zone.pulling-up .axis-label.top { opacity: 1; color: #D85A30; }
+    .card-zone.pulling-down .axis-label.bottom { opacity: 1; color: #3B8C4E; }
+
+    /* LOADING */
     .card-loading {
       position: absolute;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--surface);
-      border-radius: 24px;
+      background: var(--cat-bg);
+      z-index: 10;
     }
     .spinner {
-      width: 32px; height: 32px;
-      border: 2px solid var(--border);
-      border-top-color: var(--sur);
+      width: 28px; height: 28px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-top-color: #111;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -268,56 +241,60 @@
     .result-panel {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: var(--surface);
+      background: #fff;
       border-radius: 24px 24px 0 0;
-      padding: 1.5rem 1.5rem 2rem;
-      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem 2.5rem;
       display: none;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       z-index: 30;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
+      transition: transform 0.4s cubic-bezier(.25,.8,.25,1);
     }
     .result-panel.visible {
       display: flex;
       transform: translateY(0);
     }
-
     .result-handle {
       width: 36px; height: 4px;
-      background: var(--border);
+      background: rgba(0,0,0,0.08);
       border-radius: 999px;
-      margin: 0 auto -4px;
+      margin: 0 auto 4px;
     }
     .result-subject {
-      font-size: 12px;
-      color: var(--muted);
+      font-size: 10px;
+      color: #aaa;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
     }
     .result-name {
       font-family: 'Syne', sans-serif;
       font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.5px;
+      color: #111;
     }
-    .result-verdict {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
+    .verdict-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
     }
     .verdict-pct {
-      font-size: 36px;
-      font-weight: 700;
+      font-size: 40px;
+      font-weight: 800;
       font-family: 'Syne', sans-serif;
+      line-height: 1;
     }
     .verdict-pct.sur { color: var(--sur); }
     .verdict-pct.sous { color: var(--sous); }
-
+    .result-verdict {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.4;
+    }
     .bar-wrap {
       height: 6px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.07);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -332,27 +309,26 @@
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: var(--muted);
     }
-    .bar-labels span:first-child { color: var(--sous); font-weight: 500; }
-    .bar-labels span:last-child { color: var(--sur); font-weight: 500; }
-
+    .bar-labels .lsous { color: var(--sous); font-weight: 500; }
+    .bar-labels .lsur { color: var(--sur); font-weight: 500; }
     .btn-next {
       width: 100%;
       padding: 14px;
       border-radius: 14px;
       border: none;
-      background: var(--sur);
+      background: #111;
       color: #fff;
       font-size: 15px;
       font-weight: 500;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
+      margin-top: 2px;
       transition: opacity 0.15s, transform 0.1s;
     }
     .btn-next:active { opacity: 0.85; transform: scale(0.98); }
 
-    /* NO MORE CARDS */
+    /* EMPTY */
     .empty-state {
       display: none;
       flex-direction: column;
@@ -360,19 +336,20 @@
       justify-content: center;
       gap: 12px;
       height: 100%;
-      color: var(--muted);
+      color: rgba(0,0,0,0.4);
       font-size: 14px;
       text-align: center;
       padding: 2rem;
     }
-    .empty-state .big { font-family: 'Syne', sans-serif; font-size: 48px; }
+    .empty-state .big { font-size: 48px; }
     .empty-state.visible { display: flex; }
   </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="logo">Sur<span>côté</span></div>
+<div class="app" id="app">
+
+  <div class="header" id="header">
+    <div class="logo">Surcôté</div>
     <div class="votes-badge">
       <div class="dot"></div>
       <span id="totalVotes">...</span> votes
@@ -382,78 +359,69 @@
   <div class="cats" id="cats">
     <div class="pill active" data-cat="Tout">Tout</div>
     <div class="pill" data-cat="Mode">Mode</div>
-    <div class="pill" data-cat="Musique">Musique</div>
     <div class="pill" data-cat="Food">Food</div>
-    <div class="pill" data-cat="Tech">Tech</div>
     <div class="pill" data-cat="Voyage">Voyage</div>
+    <div class="pill" data-cat="Tech">Tech</div>
+    <div class="pill" data-cat="Musique">Musique</div>
+    <div class="pill" data-cat="Cinéma">Cinéma</div>
+    <div class="pill" data-cat="Sport">Sport</div>
     <div class="pill" data-cat="Vie quotidienne">Quotidien</div>
+    <div class="pill" data-cat="Beauté">Beauté</div>
   </div>
 
-  <div class="swipe-area" id="swipeArea">
-    <div class="axis-label top">
-      <span class="chevron">↑</span>
-      Surcôté
+  <div class="card-zone" id="cardZone">
+    <div class="axis-label top">↑ Surcôté</div>
+
+    <div class="card back" id="cardBack">
+      <div class="card-photo" id="backPhoto"></div>
+      <div class="card-info">
+        <div class="card-cat" id="backCat"></div>
+        <div class="card-name" id="backName"></div>
+      </div>
     </div>
 
-    <div class="card-zone" id="cardZone">
-      <div class="card back" id="cardBack">
-        <div class="card-photo" id="backPhoto"></div>
-        <div class="card-gradient"></div>
-        <div class="card-info">
-          <div class="card-cat" id="backCat"></div>
-          <div class="card-name" id="backName"></div>
-        </div>
-      </div>
-      <div class="card front" id="cardFront">
+    <div class="card front" id="cardFront">
+      <div class="card-photo" id="frontPhoto">
         <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
-        <div class="card-photo" id="frontPhoto"></div>
-        <div class="card-gradient"></div>
-        <div class="card-overlay overlay-sur">
-          <div class="overlay-arrow">↑</div>
-          <div class="overlay-label">Surcôté</div>
-        </div>
-        <div class="card-overlay overlay-sous">
-          <div class="overlay-label">Sous-côté</div>
-          <div class="overlay-arrow">↓</div>
-        </div>
-        <div class="card-info">
-          <div class="card-cat" id="frontCat"></div>
-          <div class="card-name" id="frontName"></div>
-        </div>
+        <div class="hint-over hint-sur">↑ Surcôté</div>
+        <div class="hint-over hint-sous">↓ Sous-côté</div>
       </div>
-
-      <div class="empty-state" id="emptyState">
-        <div class="big">🎉</div>
-        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text)">C'est tout pour l'instant !</div>
-        <div>Reviens plus tard pour de nouvelles cartes.</div>
+      <div class="card-info" id="frontInfo">
+        <div class="card-cat" id="frontCat"></div>
+        <div class="card-name" id="frontName"></div>
       </div>
     </div>
 
-    <div class="axis-label bottom">
-      Sous-côté
-      <span class="chevron">↓</span>
+    <div class="empty-state" id="emptyState">
+      <div class="big">🎉</div>
+      <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#111">C'est tout pour l'instant !</div>
+      <div>Reviens plus tard pour de nouvelles cartes.</div>
+    </div>
+
+    <div class="axis-label bottom">Sous-côté ↓</div>
+
+    <!-- Result panel inside card-zone so it overlays the card -->
+    <div class="result-panel" id="resultPanel">
+      <div class="result-handle"></div>
+      <div>
+        <div class="result-subject">Le verdict mondial sur</div>
+        <div class="result-name" id="rName"></div>
+      </div>
+      <div class="verdict-row">
+        <div class="verdict-pct" id="rPct"></div>
+        <div class="result-verdict" id="rVerdict"></div>
+      </div>
+      <div>
+        <div class="bar-wrap"><div class="bar-fill" id="rBar"></div></div>
+        <div class="bar-labels">
+          <span class="lsous" id="rSous"></span>
+          <span class="lsur" id="rSur"></span>
+        </div>
+      </div>
+      <button class="btn-next" id="btnNext">Carte suivante →</button>
     </div>
   </div>
 
-  <div class="result-panel" id="resultPanel">
-    <div class="result-handle"></div>
-    <div>
-      <div class="result-subject">Le verdict mondial sur</div>
-      <div class="result-name" id="rName"></div>
-    </div>
-    <div style="display:flex;align-items:baseline;gap:10px">
-      <div class="verdict-pct" id="rPct"></div>
-      <div class="result-verdict" id="rVerdict"></div>
-    </div>
-    <div>
-      <div class="bar-wrap"><div class="bar-fill" id="rBar"></div></div>
-      <div class="bar-labels">
-        <span id="rSous"></span>
-        <span id="rSur"></span>
-      </div>
-    </div>
-    <button class="btn-next" id="btnNext">Carte suivante →</button>
-  </div>
 </div>
 
 <script>
@@ -462,13 +430,45 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const CAT_COLORS = {
+  'Mode':            '#FF6EC7',
+  'Food':            '#FFB347',
+  'Voyage':          '#56D4E8',
+  'Tech':            '#7B9FFF',
+  'Vie quotidienne': '#7EE89A',
+  'Musique':         '#C77DFF',
+  'Cinéma':          '#FF7F7F',
+  'Sport':           '#5BC8F5',
+  'Beauté':          '#FFB3D9',
+  'Tout':            '#F5F0E8',
+};
+
 let items = [], idx = 0, currentCat = 'Tout';
 let dragging = false, startY = 0, curY = 0;
 
 const front = document.getElementById('cardFront');
-const area = document.getElementById('swipeArea');
+const zone  = document.getElementById('cardZone');
 const panel = document.getElementById('resultPanel');
 const loading = document.getElementById('cardLoading');
+const app   = document.getElementById('app');
+const header = document.getElementById('header');
+const cats  = document.getElementById('cats');
+
+function setCatBg(cat) {
+  const color = CAT_COLORS[cat] || CAT_COLORS['Tout'];
+  app.style.background    = color;
+  header.style.background = color;
+  cats.style.background   = color;
+  document.querySelectorAll('.card-info').forEach(el => el.style.background = color);
+}
+
+function hdUrl(url) {
+  if (!url) return null;
+  if (url.includes('pexels.com')) {
+    return url.replace(/[?&]w=\d+/g, '').replace(/[?&]q=\d+/g, '') + '?w=1200&q=95&auto=compress&cs=tinysrgb';
+  }
+  return url;
+}
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -507,48 +507,29 @@ async function castVote(itemId, vote) {
   loadTotalVotes();
 }
 
-const CAT_COLORS = {
-  'Mode':           '#8B1A6B',  // rose fuchsia profond
-  'Food':           '#B85C00',  // orange brûlé
-  'Voyage':         '#006B8F',  // bleu lagon
-  'Tech':           '#1A1A6E',  // bleu électrique nuit
-  'Vie quotidienne':'#2D6A4F',  // vert sauge
-  'Musique':        '#5C0A7A',  // violet électrique
-  'Cinéma':         '#7A0A0A',  // rouge cinéma
-  'Sport':          '#0A4F7A',  // bleu sport
-  'Beauté':         '#7A3A5C',  // mauve rosé
-  'Tout':           '#0e0e0e',
-};
-
-function setCatBackground(category) {
-  const color = CAT_COLORS[category] || '#0e0e0e';
-  document.documentElement.style.setProperty('--cat-bg', color);
-  document.body.style.background = color;
-  document.querySelector('.app').style.background = color;
-}
-
-function hdUrl(url) {
-  if (!url) return url;
-  if (url.includes('pexels.com')) {
-    return url.replace(/[?&]w=\d+/g, '').replace(/[?&]q=\d+/g, '') + '?w=1200&q=95&auto=compress&cs=tinysrgb';
-  }
-  return url;
-}
-
 function setCard(card, photoEl, nameEl, catEl) {
   if (!card) return;
-  photoEl.innerHTML = '';
+  const existingImg = photoEl.querySelector('img');
+  if (existingImg) existingImg.remove();
+  const existingFb = photoEl.querySelector('.card-photo-fallback');
+  if (existingFb) existingFb.remove();
+
   const url = hdUrl(card.image_url);
   if (url) {
     const img = document.createElement('img');
     img.src = url;
     img.alt = card.name;
     img.onerror = () => {
-      photoEl.innerHTML = '<div class="card-photo-fallback"></div>';
+      img.remove();
+      const fb = document.createElement('div');
+      fb.className = 'card-photo-fallback';
+      photoEl.appendChild(fb);
     };
     photoEl.appendChild(img);
   } else {
-    photoEl.innerHTML = '<div class="card-photo-fallback"></div>';
+    const fb = document.createElement('div');
+    fb.className = 'card-photo-fallback';
+    photoEl.appendChild(fb);
   }
   nameEl.textContent = card.name;
   catEl.textContent = card.category;
@@ -564,7 +545,7 @@ function loadCards() {
     return;
   }
   loading.style.display = 'none';
-  setCatBackground(c.category);
+  setCatBg(c.category);
   setCard(c, document.getElementById('frontPhoto'), document.getElementById('frontName'), document.getElementById('frontCat'));
   if (n) setCard(n, document.getElementById('backPhoto'), document.getElementById('backName'), document.getElementById('backCat'));
 }
@@ -592,10 +573,10 @@ async function showResult(vote) {
 function swipe(dir) {
   const vote = dir < 0 ? 'sous' : 'sur';
   front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
-  front.style.transform = `translateY(${dir * -600}px) rotate(${dir * -4}deg)`;
+  front.style.transform = `translateY(${dir * -700}px) rotate(${dir * -3}deg)`;
   front.style.opacity = '0';
   front.classList.remove('show-sur', 'show-sous');
-  area.classList.remove('pulling-up', 'pulling-down');
+  zone.classList.remove('pulling-up', 'pulling-down');
   front.style.pointerEvents = 'none';
   showResult(vote);
 }
@@ -603,7 +584,7 @@ function swipe(dir) {
 document.getElementById('btnNext').onclick = () => {
   idx++;
   panel.classList.remove('visible');
-  setTimeout(() => { panel.style.display = 'none'; }, 350);
+  setTimeout(() => { panel.style.display = 'none'; }, 400);
   document.getElementById('rBar').style.width = '0%';
   front.style.transition = 'none';
   front.style.transform = '';
@@ -616,11 +597,11 @@ function onStart(y) { dragging = true; startY = y; front.style.transition = 'non
 function onMove(y) {
   if (!dragging) return;
   curY = y - startY;
-  front.style.transform = `translateY(${curY}px) rotate(${curY * 0.015}deg)`;
+  front.style.transform = `translateY(${curY}px) rotate(${curY * 0.012}deg)`;
   front.classList.toggle('show-sur', curY < -70);
   front.classList.toggle('show-sous', curY > 70);
-  area.classList.toggle('pulling-up', curY < -70);
-  area.classList.toggle('pulling-down', curY > 70);
+  zone.classList.toggle('pulling-up', curY < -70);
+  zone.classList.toggle('pulling-down', curY > 70);
 }
 function onEnd() {
   if (!dragging) return; dragging = false;
@@ -630,7 +611,7 @@ function onEnd() {
     front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
     front.style.transform = '';
     front.classList.remove('show-sur', 'show-sous');
-    area.classList.remove('pulling-up', 'pulling-down');
+    zone.classList.remove('pulling-up', 'pulling-down');
   }
   curY = 0;
 }
@@ -655,7 +636,7 @@ document.querySelectorAll('.pill').forEach(p => {
     document.getElementById('emptyState').classList.remove('visible');
     front.style.display = '';
     document.getElementById('cardBack').style.display = '';
-    setCatBackground(currentCat);
+    setCatBg(currentCat);
     items = await loadItems(currentCat);
     loadCards();
   });
@@ -663,6 +644,7 @@ document.querySelectorAll('.pill').forEach(p => {
 
 (async () => {
   loadTotalVotes();
+  setCatBg('Tout');
   items = await loadItems('Tout');
   loadCards();
 })();
