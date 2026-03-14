@@ -677,7 +677,6 @@ document.getElementById('btnNext').onclick = () => {
   loadCards();
 };
 
-let startX = 0;
 function onStart(x, y) { dragging = true; startX = x; startY = y; front.style.transition = 'none'; }
 function onMove(x, y) {
   if (!dragging) return;
