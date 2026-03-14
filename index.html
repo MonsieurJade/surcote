@@ -14,7 +14,8 @@
       --sur-bg: rgba(216,90,48,0.18);
       --sous-bg: rgba(59,140,78,0.18);
       --bg: #0e0e0e;
-      --surface: #1a1a1a;
+      --cat-bg: #0e0e0e;
+      --surface: rgba(0,0,0,0.35);
       --border: rgba(255,255,255,0.08);
       --text: #f5f5f0;
       --muted: rgba(245,245,240,0.45);
@@ -24,9 +25,10 @@
 
     html, body {
       height: 100%; overflow: hidden;
-      background: var(--bg);
+      background: var(--cat-bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
+      transition: background 0.6s ease;
     }
 
     .app {
@@ -37,6 +39,8 @@
       flex-direction: column;
       position: relative;
       overflow: hidden;
+      background: var(--cat-bg);
+      transition: background 0.6s ease;
     }
 
     /* HEADER */
@@ -491,12 +495,39 @@ async function castVote(itemId, vote) {
   loadTotalVotes();
 }
 
+const CAT_COLORS = {
+  'Mode':           '#8B1A6B',  // rose fuchsia profond
+  'Food':           '#B85C00',  // orange brûlé
+  'Voyage':         '#006B8F',  // bleu lagon
+  'Tech':           '#1A1A6E',  // bleu électrique nuit
+  'Vie quotidienne':'#2D6A4F',  // vert sauge
+  'Musique':        '#5C0A7A',  // violet électrique
+  'Cinéma':         '#7A0A0A',  // rouge cinéma
+  'Sport':          '#0A4F7A',  // bleu sport
+  'Beauté':         '#7A3A5C',  // mauve rosé
+  'Tout':           '#0e0e0e',
+};
+
+function setCatBackground(category) {
+  const color = CAT_COLORS[category] || '#0e0e0e';
+  document.documentElement.style.setProperty('--cat-bg', color);
+  document.body.style.background = color;
+  document.querySelector('.app').style.background = color;
+}
+
+function hdUrl(url) {
+  if (!url) return url;
+  // Pexels: upgrade to higher resolution
+  return url.replace(/\?w=\d+/, '?w=800&q=90');
+}
+
 function setCard(card, photoEl, nameEl, catEl) {
   if (!card) return;
   photoEl.innerHTML = '';
-  if (card.image_url) {
+  const url = hdUrl(card.image_url);
+  if (url) {
     const img = document.createElement('img');
-    img.src = card.image_url;
+    img.src = url;
     img.alt = card.name;
     img.onerror = () => {
       photoEl.innerHTML = '<div class="card-photo-fallback"></div>';
@@ -519,6 +550,7 @@ function loadCards() {
     return;
   }
   loading.style.display = 'none';
+  setCatBackground(c.category);
   setCard(c, document.getElementById('frontPhoto'), document.getElementById('frontName'), document.getElementById('frontCat'));
   if (n) setCard(n, document.getElementById('backPhoto'), document.getElementById('backName'), document.getElementById('backCat'));
 }
@@ -609,6 +641,7 @@ document.querySelectorAll('.pill').forEach(p => {
     document.getElementById('emptyState').classList.remove('visible');
     front.style.display = '';
     document.getElementById('cardBack').style.display = '';
+    setCatBackground(currentCat);
     items = await loadItems(currentCat);
     loadCards();
   });
