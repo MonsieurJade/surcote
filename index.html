@@ -194,29 +194,40 @@
       letter-spacing: -1px;
     }
 
-    /* AXIS LABELS */
-    .axis-label {
+    /* AXIS LABELS — top flottant sur la photo */
+    .axis-label.top {
       position: absolute;
+      top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 1px;
       text-transform: uppercase;
       pointer-events: none;
-      transition: opacity 0.2s;
       z-index: 10;
-      color: rgba(0,0,0,0.3);
+      color: rgba(255,255,255,0.6);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
-    .axis-label.top { top: 10px; }
-    .axis-label.bottom { bottom: 10px; }
+    .card-zone.pulling-up .axis-label.top { color: #fff; }
 
-    .card-zone.pulling-up .axis-label.top { opacity: 1; color: #D85A30; }
-    .card-zone.pulling-down .axis-label.bottom { opacity: 1; color: #3B8C4E; }
+    /* LABEL BAS — sur la photo juste au-dessus du bloc couleur */
+    .photo-bottom-label {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      pointer-events: none;
+      z-index: 10;
+      color: rgba(255,255,255,0.6);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      white-space: nowrap;
+    }
+    .card-zone.pulling-down .photo-bottom-label { color: #fff; }
 
     /* LOADING */
     .card-loading {
@@ -372,6 +383,7 @@
   <div class="card-zone" id="cardZone">
     <div class="axis-label top">↑ Surcôté</div>
 
+
     <div class="card back" id="cardBack">
       <div class="card-photo" id="backPhoto"></div>
       <div class="card-info">
@@ -385,6 +397,7 @@
         <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
         <div class="hint-over hint-sur">↑ Surcôté</div>
         <div class="hint-over hint-sous">↓ Sous-côté</div>
+        <div class="photo-bottom-label">Sous-côté ↓</div>
       </div>
       <div class="card-info" id="frontInfo">
         <div class="card-cat" id="frontCat"></div>
@@ -398,7 +411,6 @@
       <div>Reviens plus tard pour de nouvelles cartes.</div>
     </div>
 
-    <div class="axis-label bottom">Sous-côté ↓</div>
 
     <!-- Result panel inside card-zone so it overlays the card -->
     <div class="result-panel" id="resultPanel">
