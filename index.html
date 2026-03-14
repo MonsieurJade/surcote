@@ -160,11 +160,20 @@
     .card-photo {
       position: absolute;
       inset: 0;
-      background-size: cover;
-      background-position: center;
+      overflow: hidden;
+    }
+    .card-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
       transition: transform 0.4s ease;
     }
-    .card.front:active .card-photo { transform: scale(1.02); }
+    .card.front:active .card-photo img { transform: scale(1.02); }
+    .card-photo-fallback {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);
+    }
 
     .card-gradient {
       position: absolute;
@@ -484,8 +493,18 @@ async function castVote(itemId, vote) {
 
 function setCard(card, photoEl, nameEl, catEl) {
   if (!card) return;
-  photoEl.style.backgroundImage = card.image_url ? `url(${card.image_url})` : 'none';
-  photoEl.style.background = card.image_url ? '' : 'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)';
+  photoEl.innerHTML = '';
+  if (card.image_url) {
+    const img = document.createElement('img');
+    img.src = card.image_url;
+    img.alt = card.name;
+    img.onerror = () => {
+      photoEl.innerHTML = '<div class="card-photo-fallback"></div>';
+    };
+    photoEl.appendChild(img);
+  } else {
+    photoEl.innerHTML = '<div class="card-photo-fallback"></div>';
+  }
   nameEl.textContent = card.name;
   catEl.textContent = card.category;
 }
