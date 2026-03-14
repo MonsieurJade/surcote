@@ -165,10 +165,30 @@
       color: #fff;
       letter-spacing: -0.5px;
     }
-    .hint-sur { background: rgba(216,90,48,0.45); }
+    .hint-sur  { background: rgba(216,90,48,0.45); }
     .hint-sous { background: rgba(59,140,78,0.45); }
-    .show-sur .hint-sur { opacity: 1; }
+    .hint-cote { background: rgba(80,80,200,0.45); }
+    .show-sur  .hint-sur  { opacity: 1; }
     .show-sous .hint-sous { opacity: 1; }
+    .show-cote .hint-cote { opacity: 1; }
+
+    /* LABEL GAUCHE/DROITE sur la photo */
+    .side-label {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      pointer-events: none;
+      z-index: 10;
+      color: rgba(255,255,255,0.5);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      white-space: nowrap;
+    }
+    .side-label.right { right: 14px; }
+    .card-zone.pulling-right .side-label.right { color: #fff; }
 
     /* BLOC TEXTE BAS — couleur thème */
     .card-info {
@@ -298,6 +318,8 @@
     }
     .verdict-pct.sur { color: var(--sur); }
     .verdict-pct.sous { color: var(--sous); }
+    .verdict-pct.cote { color: #5055CC; }
+    .verdict-pct.sous { color: var(--sous); }
     .result-verdict {
       font-size: 13px;
       color: #888;
@@ -322,6 +344,7 @@
       font-size: 12px;
     }
     .bar-labels .lsous { color: var(--sous); font-weight: 500; }
+    .bar-labels .lcote { color: #5055CC; font-weight: 500; }
     .bar-labels .lsur { color: var(--sur); font-weight: 500; }
     .btn-next {
       width: 100%;
@@ -397,6 +420,8 @@
         <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
         <div class="hint-over hint-sur">↑ Surcôté</div>
         <div class="hint-over hint-sous">↓ Sous-côté</div>
+        <div class="hint-over hint-cote">→ Côté</div>
+        <div class="side-label right">Côté →</div>
         <div class="photo-bottom-label">Sous-côté ↓</div>
       </div>
       <div class="card-info" id="frontInfo">
@@ -427,6 +452,7 @@
         <div class="bar-wrap"><div class="bar-fill" id="rBar"></div></div>
         <div class="bar-labels">
           <span class="lsous" id="rSous"></span>
+          <span class="lcote" id="rCote"></span>
           <span class="lsur" id="rSur"></span>
         </div>
       </div>
@@ -456,7 +482,7 @@ const CAT_COLORS = {
 };
 
 let items = [], idx = 0, currentCat = 'Tout';
-let dragging = false, startY = 0, curY = 0;
+let dragging = false, startX = 0, startY = 0, curX = 0, curY = 0;
 
 const front = document.getElementById('cardFront');
 const zone  = document.getElementById('cardZone');
@@ -504,12 +530,15 @@ async function loadTotalVotes() {
 
 async function getVotesForItem(itemId) {
   const { data } = await db.from('votes').select('vote').eq('item_id', itemId);
-  if (!data || data.length === 0) return { sur: 50, sous: 50, total: 0 };
+  if (!data || data.length === 0) return { sur: 33, sous: 33, cote: 34, total: 0 };
   const total = data.length;
-  const surCount = data.filter(v => v.vote === 'sur').length;
+  const surCount  = data.filter(v => v.vote === 'sur').length;
+  const sousCount = data.filter(v => v.vote === 'sous').length;
+  const coteCount = data.filter(v => v.vote === 'cote').length;
   return {
-    sur: Math.round((surCount / total) * 100),
-    sous: Math.round(((total - surCount) / total) * 100),
+    sur:  Math.round((surCount  / total) * 100),
+    sous: Math.round((sousCount / total) * 100),
+    cote: Math.round((coteCount / total) * 100),
     total
   };
 }
@@ -582,15 +611,55 @@ async function showResult(vote) {
   });
 }
 
-function swipe(dir) {
-  const vote = dir < 0 ? 'sous' : 'sur';
+async function getVotesForItem(itemId) {
+  const { data } = await db.from('votes').select('vote').eq('item_id', itemId);
+  if (!data || data.length === 0) return { sur: 33, sous: 33, cote: 34, total: 0 };
+  const total = data.length;
+  const surCount  = data.filter(v => v.vote === 'sur').length;
+  const sousCount = data.filter(v => v.vote === 'sous').length;
+  const coteCount = data.filter(v => v.vote === 'cote').length;
+  return {
+    sur:  Math.round((surCount  / total) * 100),
+    sous: Math.round((sousCount / total) * 100),
+    cote: Math.round((coteCount / total) * 100),
+    total
+  };
+}
+
+async function showResult(vote) {
+  const c = items[idx];
+  await castVote(c.id, vote);
+  const stats = await getVotesForItem(c.id);
+  document.getElementById('rName').textContent = c.name;
+
+  const max = Math.max(stats.sur, stats.sous, stats.cote);
+  let verdict, cls;
+  if (max === stats.sur)       { verdict = 'surcôté';   cls = 'sur'; }
+  else if (max === stats.sous) { verdict = 'sous-côté'; cls = 'sous'; }
+  else                         { verdict = 'côté';      cls = 'cote'; }
+
+  const rPct = document.getElementById('rPct');
+  rPct.textContent = max + '%';
+  rPct.className = 'verdict-pct ' + cls;
+  document.getElementById('rVerdict').textContent = `des gens pensent que c'est ${verdict} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
+  document.getElementById('rSous').textContent = stats.sous + '% sous-côté';
+  document.getElementById('rSur').textContent  = stats.sur  + '% surcôté';
+  document.getElementById('rCote').textContent = stats.cote + '% côté';
+  panel.style.display = 'flex';
+  requestAnimationFrame(() => {
+    panel.classList.add('visible');
+    setTimeout(() => { document.getElementById('rBar').style.width = stats.sur + '%'; }, 100);
+  });
+}
+
+function swipeCard(voteType, tx, ty) {
   front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
-  front.style.transform = `translateY(${dir * -700}px) rotate(${dir * -3}deg)`;
-  front.style.opacity = '0';
-  front.classList.remove('show-sur', 'show-sous');
-  zone.classList.remove('pulling-up', 'pulling-down');
+  front.style.transform  = `translate(${tx}px, ${ty}px) rotate(${tx * 0.03 + ty * -0.02}deg)`;
+  front.style.opacity    = '0';
+  front.classList.remove('show-sur', 'show-sous', 'show-cote');
+  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
   front.style.pointerEvents = 'none';
-  showResult(vote);
+  showResult(voteType);
 }
 
 document.getElementById('btnNext').onclick = () => {
@@ -599,41 +668,65 @@ document.getElementById('btnNext').onclick = () => {
   setTimeout(() => { panel.style.display = 'none'; }, 400);
   document.getElementById('rBar').style.width = '0%';
   front.style.transition = 'none';
-  front.style.transform = '';
-  front.style.opacity = '1';
+  front.style.transform  = '';
+  front.style.opacity    = '1';
   front.style.pointerEvents = '';
   loadCards();
 };
 
-function onStart(y) { dragging = true; startY = y; front.style.transition = 'none'; }
-function onMove(y) {
+let startX = 0;
+function onStart(x, y) { dragging = true; startX = x; startY = y; front.style.transition = 'none'; }
+function onMove(x, y) {
   if (!dragging) return;
+  curX = x - startX;
   curY = y - startY;
-  front.style.transform = `translateY(${curY}px) rotate(${curY * 0.012}deg)`;
-  front.classList.toggle('show-sur', curY < -70);
-  front.classList.toggle('show-sous', curY > 70);
-  zone.classList.toggle('pulling-up', curY < -70);
-  zone.classList.toggle('pulling-down', curY > 70);
+  const absX = Math.abs(curX), absY = Math.abs(curY);
+
+  if (absX > absY) {
+    // Mouvement horizontal → Côté
+    front.style.transform = `translateX(${curX}px) rotate(${curX * 0.04}deg)`;
+    front.classList.toggle('show-cote', absX > 60);
+    front.classList.remove('show-sur', 'show-sous');
+    zone.classList.toggle('pulling-right', curX > 60);
+    zone.classList.toggle('pulling-left', curX < -60);
+    zone.classList.remove('pulling-up', 'pulling-down');
+  } else {
+    // Mouvement vertical → Sur / Sous
+    front.style.transform = `translateY(${curY}px) rotate(${curY * 0.012}deg)`;
+    front.classList.toggle('show-sur',  curY < -70);
+    front.classList.toggle('show-sous', curY > 70);
+    front.classList.remove('show-cote');
+    zone.classList.toggle('pulling-up',   curY < -70);
+    zone.classList.toggle('pulling-down', curY > 70);
+    zone.classList.remove('pulling-right', 'pulling-left');
+  }
 }
 function onEnd() {
   if (!dragging) return; dragging = false;
-  if (curY < -110) swipe(1);
-  else if (curY > 110) swipe(-1);
-  else {
-    front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
-    front.style.transform = '';
-    front.classList.remove('show-sur', 'show-sous');
-    zone.classList.remove('pulling-up', 'pulling-down');
+  const absX = Math.abs(curX), absY = Math.abs(curY);
+  if (absX > absY) {
+    if (absX > 100) swipeCard('cote', curX > 0 ? 500 : -500, 0);
+    else reset();
+  } else {
+    if (curY < -110)     swipeCard('sur',  0, -700);
+    else if (curY > 110) swipeCard('sous', 0,  700);
+    else reset();
   }
-  curY = 0;
+  curX = 0; curY = 0;
+}
+function reset() {
+  front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
+  front.style.transform  = '';
+  front.classList.remove('show-sur', 'show-sous', 'show-cote');
+  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
 }
 
-front.addEventListener('mousedown', e => onStart(e.clientY));
-window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientY); });
-window.addEventListener('mouseup', onEnd);
-front.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientY); }, { passive: false });
-front.addEventListener('touchmove', e => { e.preventDefault(); onMove(e.touches[0].clientY); }, { passive: false });
-front.addEventListener('touchend', onEnd);
+front.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
+window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientX, e.clientY); });
+window.addEventListener('mouseup',   onEnd);
+front.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+front.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+front.addEventListener('touchend',   onEnd);
 
 document.querySelectorAll('.pill').forEach(p => {
   p.addEventListener('click', async () => {
