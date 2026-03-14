@@ -470,11 +470,19 @@ const area = document.getElementById('swipeArea');
 const panel = document.getElementById('resultPanel');
 const loading = document.getElementById('cardLoading');
 
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 async function loadItems(cat) {
   let q = db.from('items').select('*');
   if (cat !== 'Tout') q = q.eq('category', cat);
-  const { data } = await q.order('created_at', { ascending: false });
-  return data || [];
+  const { data } = await q;
+  return shuffle(data || []);
 }
 
 async function loadTotalVotes() {
@@ -521,8 +529,10 @@ function setCatBackground(category) {
 
 function hdUrl(url) {
   if (!url) return url;
-  // Pexels: upgrade to higher resolution
-  return url.replace(/\?w=\d+/, '?w=800&q=90');
+  if (url.includes('pexels.com')) {
+    return url.replace(/[?&]w=\d+/g, '').replace(/[?&]q=\d+/g, '') + '?w=1200&q=95&auto=compress&cs=tinysrgb';
+  }
+  return url;
 }
 
 function setCard(card, photoEl, nameEl, catEl) {
