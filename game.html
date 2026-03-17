@@ -181,7 +181,7 @@
       z-index: 5;
       font-family: 'Anton', Impact, sans-serif;
       font-size: 38px;
-      color: #111;
+      color: #fff;
       letter-spacing: 0.02em;
     }
     .hint-sur    { background: rgba(216,90,48,0.55); }
@@ -204,13 +204,13 @@
       letter-spacing: 0.1em;
       pointer-events: none;
       z-index: 10;
-      color: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.5);
       white-space: nowrap;
     }
     .side-label.right { right: 14px; }
     .side-label.left  { left: 14px; }
-    .card-zone.pulling-right .side-label.right { color: #111; }
-    .card-zone.pulling-left  .side-label.left  { color: #111; }
+    .card-zone.pulling-right .side-label.right { color: #fff; }
+    .card-zone.pulling-left  .side-label.left  { color: #fff; }
 
     .axis-label.top {
       position: absolute;
@@ -223,9 +223,9 @@
       letter-spacing: 0.1em;
       pointer-events: none;
       z-index: 10;
-      color: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.5);
     }
-    .card-zone.pulling-up .axis-label.top { color: #111; }
+    .card-zone.pulling-up .axis-label.top { color: #fff; }
 
     .photo-bottom-label {
       position: absolute;
@@ -238,15 +238,15 @@
       letter-spacing: 0.1em;
       pointer-events: none;
       z-index: 10;
-      color: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.5);
       white-space: nowrap;
     }
       pointer-events: none;
       z-index: 10;
-      color: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.5);
       white-space: nowrap;
     }
-    .card-zone.pulling-down .photo-bottom-label { color: #111; }
+    .card-zone.pulling-down .photo-bottom-label { color: #fff; }
 
     /* ── CARD INFO ── */
     .card-info {
@@ -578,8 +578,6 @@
   </div>
 
   <div class="card-zone" id="cardZone">
-    <div class="axis-label top">↑ Surcôté</div>
-
     <div class="card back" id="cardBack">
       <div class="card-photo" id="backPhoto"></div>
       <div class="card-info">
@@ -591,6 +589,7 @@
     <div class="card front" id="cardFront">
       <div class="card-photo" id="frontPhoto">
         <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
+        <div class="axis-label top">↑ Surcôté</div>
         <div class="hint-over hint-sur">↑ Surcôté</div>
         <div class="hint-over hint-sous">↓ Sous-côté</div>
         <div class="hint-over hint-cote">Côté →</div>
