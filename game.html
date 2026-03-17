@@ -347,29 +347,51 @@
       color: rgba(0,0,0,0.6);
       line-height: 1.4;
     }
-    .bar-wrap {
-      height: 8px;
-      background: rgba(0,0,0,0.15);
-      border: 2px solid #111;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      background: #111;
-      width: 0%;
-      transition: width 1s cubic-bezier(.25,.8,.25,1);
-    }
-    .bar-labels {
+    /* ── CAMEMBERT ── */
+    .pie-wrap {
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .pie-svg {
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+      filter: drop-shadow(2px 2px 0 #111);
+    }
+    .pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+    .pie-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .pie-legend-dot {
+      width: 10px; height: 10px;
+      border: 2px solid #111;
+      flex-shrink: 0;
+    }
+    .pie-legend-dot.sur  { background: var(--sur); }
+    .pie-legend-dot.sous { background: var(--sous); }
+    .pie-legend-dot.cote { background: #5055CC; }
+    .pie-legend-label {
       font-family: 'Black Han Sans', Impact, sans-serif;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+      color: #111;
+      flex: 1;
     }
-    .bar-labels .lsous { color: var(--sous); }
-    .bar-labels .lcote { color: #5055CC; }
-    .bar-labels .lsur  { color: var(--sur); }
+    .pie-legend-pct {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      color: #111;
+    }
     .btn-next {
       width: 100%;
       padding: 14px;
@@ -602,12 +624,26 @@
         <div class="verdict-pct" id="rPct"></div>
         <div class="result-verdict" id="rVerdict"></div>
       </div>
-      <div>
-        <div class="bar-wrap"><div class="bar-fill" id="rBar"></div></div>
-        <div class="bar-labels">
-          <span class="lsous" id="rSous"></span>
-          <span class="lcote" id="rCote"></span>
-          <span class="lsur" id="rSur"></span>
+      <div class="pie-wrap">
+        <svg class="pie-svg" id="pieSvg" viewBox="0 0 32 32">
+          <!-- segments dessinés dynamiquement en JS -->
+        </svg>
+        <div class="pie-legend">
+          <div class="pie-legend-row">
+            <div class="pie-legend-dot sur"></div>
+            <div class="pie-legend-label">↑ Surcôté</div>
+            <div class="pie-legend-pct" id="rPctSur">—</div>
+          </div>
+          <div class="pie-legend-row">
+            <div class="pie-legend-dot cote"></div>
+            <div class="pie-legend-label">→ Côté</div>
+            <div class="pie-legend-pct" id="rPctCote">—</div>
+          </div>
+          <div class="pie-legend-row">
+            <div class="pie-legend-dot sous"></div>
+            <div class="pie-legend-label">↓ Sous-côté</div>
+            <div class="pie-legend-pct" id="rPctSous">—</div>
+          </div>
         </div>
       </div>
       <button class="btn-next" id="btnNext">Carte suivante →</button>
@@ -957,20 +993,78 @@ async function showResult(vote) {
   else if (max === stats.sous) { verdict = 'sous-côté'; cls = 'sous'; }
   else                         { verdict = 'côté';      cls = 'cote'; }
 
-  const rPct = document.getElementById('rPct');
-  rPct.textContent = max + '%';
-  rPct.className = 'verdict-pct ' + cls;
+  document.getElementById('rPct').textContent = max + '%';
+  document.getElementById('rPct').className = 'verdict-pct ' + cls;
   document.getElementById('rVerdict').textContent =
     `des gens pensent que c'est ${verdict} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
-  document.getElementById('rSous').textContent = stats.sous + '% sous-côté';
-  document.getElementById('rSur').textContent  = stats.sur  + '% surcôté';
-  document.getElementById('rCote').textContent = stats.cote + '% côté';
+
+  // Légende
+  document.getElementById('rPctSur').textContent  = stats.sur  + '%';
+  document.getElementById('rPctCote').textContent = stats.cote + '%';
+  document.getElementById('rPctSous').textContent = stats.sous + '%';
+
+  // Reset camembert (vide)
+  drawPie(0, 0, 0);
 
   panel.style.display = 'flex';
   requestAnimationFrame(() => {
     panel.classList.add('visible');
-    setTimeout(() => { document.getElementById('rBar').style.width = stats.sur + '%'; }, 100);
+    // Anime le camembert après l'ouverture
+    setTimeout(() => drawPie(stats.sur, stats.cote, stats.sous), 150);
   });
+}
+
+// ── DESSIN DU CAMEMBERT ──────────────────────────────
+function drawPie(sur, cote, sous) {
+  const svg = document.getElementById('pieSvg');
+  const cx = 16, cy = 16, r = 15.5;
+  const COLORS = { sur: '#D85A30', cote: '#5055CC', sous: '#3B8C4E' };
+
+  // Segments dans l'ordre d'affichage
+  const segments = [
+    { key: 'sur',  pct: sur },
+    { key: 'cote', pct: cote },
+    { key: 'sous', pct: sous },
+  ];
+
+  // Si total = 0, disque gris uniforme
+  const total = sur + cote + sous;
+  if (total === 0) {
+    svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="rgba(0,0,0,0.1)" stroke="#111" stroke-width="1"/>`;
+    return;
+  }
+
+  // Génère les paths de chaque secteur
+  function polarToXY(angleDeg) {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+  }
+
+  let html = '';
+  let startAngle = 0;
+
+  segments.forEach(({ key, pct }) => {
+    if (pct <= 0) return;
+    const angle = (pct / 100) * 360;
+    const endAngle = startAngle + angle;
+    const largeArc = angle > 180 ? 1 : 0;
+    const [x1, y1] = polarToXY(startAngle);
+    const [x2, y2] = polarToXY(endAngle);
+
+    if (pct >= 99.9) {
+      // Cercle complet
+      html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${COLORS[key]}" stroke="#111" stroke-width="1"/>`;
+    } else {
+      html += `<path d="M${cx},${cy} L${x1.toFixed(3)},${y1.toFixed(3)} A${r},${r} 0 ${largeArc},1 ${x2.toFixed(3)},${y2.toFixed(3)} Z"
+        fill="${COLORS[key]}" stroke="#111" stroke-width="0.8"/>`;
+    }
+    startAngle = endAngle;
+  });
+
+  // Bordure extérieure
+  html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#111" stroke-width="1.5"/>`;
+
+  svg.innerHTML = html;
 }
 
 // ── SWIPE LOGIC ───────────────────────────────────────
@@ -1012,7 +1106,10 @@ document.getElementById('btnNext').addEventListener('click', () => {
   panel.classList.remove('visible');
   setTimeout(() => {
     panel.style.display = 'none';
-    document.getElementById('rBar').style.width = '0%';
+    drawPie(0, 0, 0);
+    document.getElementById('rPctSur').textContent  = '—';
+    document.getElementById('rPctCote').textContent = '—';
+    document.getElementById('rPctSous').textContent = '—';
     idx++;
     front.style.transition = 'none';
     front.style.transform  = '';
