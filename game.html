@@ -839,7 +839,12 @@ function setCatBg(cat) {
 const PEXELS_KEY = 'vozlKrfNpo5cqSmvgNDTPXeUKCkxoYXKVKjhCTVBsvgZUaheW1jh9oNR';
 const photoCache = {};
 
-async function getPhoto(query) {
+async function getPhoto(card) {
+  // 1. Supabase a déjà l'URL → on l'utilise directement, 0 requête Pexels
+  if (card.image_url) return card.image_url;
+
+  // 2. Sinon on cherche sur Pexels (et on met en cache pour cette session)
+  const query = card.name;
   if (photoCache[query] !== undefined) return photoCache[query];
   try {
     const res = await fetch(
@@ -864,7 +869,7 @@ async function setCard(card, photoEl, nameEl, catEl) {
   nameEl.textContent = card.name;
   catEl.textContent  = card.category;
 
-  const url = await getPhoto(card.name);
+  const url = await getPhoto(card);
   if (url) {
     const img = document.createElement('img');
     img.src = url;
