@@ -403,8 +403,16 @@
     <div class="pill" data-cat="Musique">Musique</div>
     <div class="pill" data-cat="Cinéma">Cinéma</div>
     <div class="pill" data-cat="Sport">Sport</div>
-    <div class="pill" data-cat="Vie quotidienne">Quotidien</div>
     <div class="pill" data-cat="Beauté">Beauté</div>
+    <div class="pill" data-cat="Vie quotidienne">Quotidien</div>
+    <div class="pill" data-cat="Animaux">Animaux</div>
+    <div class="pill" data-cat="Actions & Sensations">Actions</div>
+    <div class="pill" data-cat="Maison & Déco">Déco</div>
+    <div class="pill" data-cat="Nature & Écologie">Nature</div>
+    <div class="pill" data-cat="Bien-être & Santé">Bien-être</div>
+    <div class="pill" data-cat="Créativité & Hobbies">Créativité</div>
+    <div class="pill" data-cat="Soirées & Sorties">Soirées</div>
+    <div class="pill" data-cat="Enfance & Nostalgie">Nostalgie</div>
   </div>
 
   <div class="card-zone" id="cardZone">
@@ -475,16 +483,24 @@ const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const CAT_COLORS = {
-  'Mode':            '#FF6EC7',
-  'Food':            '#FFB347',
-  'Voyage':          '#56D4E8',
-  'Tech':            '#7B9FFF',
-  'Vie quotidienne': '#7EE89A',
-  'Musique':         '#C77DFF',
-  'Cinéma':          '#FF7F7F',
-  'Sport':           '#5BC8F5',
-  'Beauté':          '#FFB3D9',
-  'Tout':            '#F5F0E8',
+  'Mode':                  '#FF6EC7',
+  'Food':                  '#FFB347',
+  'Voyage':                '#56D4E8',
+  'Tech':                  '#7B9FFF',
+  'Vie quotidienne':       '#7EE89A',
+  'Musique':               '#C77DFF',
+  'Cinéma':                '#FF7F7F',
+  'Sport':                 '#5BC8F5',
+  'Beauté':                '#FFB3D9',
+  'Animaux':               '#A8E6A3',
+  'Actions & Sensations':  '#FFD166',
+  'Maison & Déco':         '#F4A261',
+  'Nature & Écologie':     '#74C69D',
+  'Bien-être & Santé':     '#B5EAD7',
+  'Créativité & Hobbies':  '#FDCFE8',
+  'Soirées & Sorties':     '#FF9A9E',
+  'Enfance & Nostalgie':   '#FFEAA7',
+  'Tout':                  '#F5F0E8',
 };
 
 let items = [], idx = 0, currentCat = 'Tout';
