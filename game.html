@@ -51,24 +51,12 @@
       }
 
       .cats {
-        padding-left: max(1.25rem, calc(50% - 240px));
+        justify-content: center;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
       }
 
-      /* Bordures verticales qui délimitent la carte */
-      .card-zone::before,
-      .card-zone::after {
-        content: '';
-        position: absolute;
-        top: 0; bottom: 0;
-        width: 3px;
-        background: #111;
-        z-index: 5;
-        pointer-events: none;
-      }
-      .card-zone::before { left: calc(50% - 240px); }
-      .card-zone::after  { right: calc(50% - 240px); }
-
-      /* Carte centrée entre les bordures */
+      /* Carte centrée */
       .card {
         left:  calc(50% - 240px);
         right: calc(50% - 240px);
