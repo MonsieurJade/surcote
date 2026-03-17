@@ -266,7 +266,7 @@
     .result-panel {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: #fff;
+      background: #F5F0E8; /* remplacé dynamiquement par setCatBg */
       border-radius: 24px 24px 0 0;
       padding: 1.25rem 1.5rem 2.5rem;
       display: none;
@@ -274,7 +274,7 @@
       gap: 12px;
       z-index: 30;
       transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(.25,.8,.25,1);
+      transition: transform 0.4s cubic-bezier(.25,.8,.25,1), background 0.5s ease;
       cursor: grab;
       touch-action: none;
     }
@@ -289,13 +289,13 @@
     }
     .result-handle {
       width: 36px; height: 4px;
-      background: rgba(0,0,0,0.08);
+      background: rgba(0,0,0,0.2);
       border-radius: 999px;
       margin: 0 auto 4px;
     }
     .result-subject {
       font-size: 10px;
-      color: #aaa;
+      color: rgba(0,0,0,0.5);
       text-transform: uppercase;
       letter-spacing: 1.5px;
     }
@@ -322,12 +322,12 @@
     .verdict-pct.cote { color: #5055CC; }
     .result-verdict {
       font-size: 13px;
-      color: #888;
+      color: rgba(0,0,0,0.6);
       line-height: 1.4;
     }
     .bar-wrap {
       height: 6px;
-      background: rgba(0,0,0,0.07);
+      background: rgba(0,0,0,0.15);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -367,15 +367,15 @@
     .tuto-panel {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: #fff;
+      background: #F5F0E8; /* remplacé dynamiquement par setCatBg */
       border-radius: 24px 24px 0 0;
       padding: 1.25rem 1.5rem 2.5rem;
       display: none;
       flex-direction: column;
       gap: 18px;
-      z-index: 40; /* au-dessus du result-panel */
+      z-index: 40;
       transform: translateY(100%);
-      transition: transform 0.45s cubic-bezier(.25,.8,.25,1);
+      transition: transform 0.45s cubic-bezier(.25,.8,.25,1), background 0.5s ease;
       cursor: grab;
       touch-action: none;
     }
@@ -400,7 +400,7 @@
 
     .tuto-handle {
       width: 36px; height: 4px;
-      background: rgba(0,0,0,0.08);
+      background: rgba(0,0,0,0.2);
       border-radius: 999px;
       margin: 0 auto 2px;
       flex-shrink: 0;
@@ -413,7 +413,7 @@
     }
     .tuto-eyebrow {
       font-size: 10px;
-      color: #aaa;
+      color: rgba(0,0,0,0.5);
       text-transform: uppercase;
       letter-spacing: 1.5px;
     }
@@ -440,10 +440,10 @@
       flex-direction: column;
       gap: 6px;
     }
-    .tuto-item.sur   { background: rgba(216,90,48,0.10); }
-    .tuto-item.sous  { background: rgba(59,140,78,0.10); }
-    .tuto-item.cote  { background: rgba(80,80,200,0.10); }
-    .tuto-item.passer{ background: rgba(0,0,0,0.05); }
+    .tuto-item.sur   { background: rgba(255,255,255,0.35); }
+    .tuto-item.sous  { background: rgba(255,255,255,0.35); }
+    .tuto-item.cote  { background: rgba(255,255,255,0.35); }
+    .tuto-item.passer{ background: rgba(0,0,0,0.08); }
 
     .tuto-arrow {
       font-size: 24px;
@@ -493,7 +493,7 @@
     /* Desc texte en bas */
     .tuto-desc {
       font-size: 13px;
-      color: #888;
+      color: rgba(0,0,0,0.6);
       line-height: 1.55;
     }
 
@@ -833,6 +833,9 @@ function setCatBg(cat) {
   header.style.background = color;
   cats.style.background   = color;
   document.querySelectorAll('.card-info').forEach(el => el.style.background = color);
+  // Panels couleur de la catégorie
+  panel.style.background     = color;
+  tutoPanel.style.background = color;
 }
 
 // ── PHOTOS ────────────────────────────────────────────
