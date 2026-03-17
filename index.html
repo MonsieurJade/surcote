@@ -17,10 +17,10 @@
       transition: background-color 0.4s ease;
     }
 
-    /* Conteneur centré — cap à 430px comme le game */
+    /* Conteneur centré — cap strict à 380px */
     .menu-inner {
       width: 100%;
-      max-width: 430px;
+      max-width: 380px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -28,10 +28,10 @@
 
     .menu-logo {
       font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: clamp(3.2rem, 14vw, 7rem);
+      font-size: clamp(3rem, 10vw, 4.5rem);
       font-weight: 900;
       color: #111;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.01em;
       white-space: nowrap;
       line-height: 1;
       border: 4px solid #111;
@@ -45,7 +45,7 @@
 
     .menu-tagline {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(0.75rem, 3vw, 1rem);
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
       font-weight: 700;
       color: #111;
       letter-spacing: 0.08em;
@@ -53,16 +53,15 @@
       background: white;
       border: 3px solid #111;
       padding: 0.3em 0.8em;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       box-shadow: 4px 4px 0 #111;
     }
 
     .menu-buttons {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      flex-direction: column; /* toujours en colonne, même sur desktop */
+      gap: 0.75rem;
       width: 100%;
-      max-width: 340px;
     }
 
     .btn-menu {
@@ -70,14 +69,14 @@
       text-align: center;
       text-decoration: none;
       font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: clamp(1.5rem, 6vw, 2rem);
+      font-size: clamp(1.4rem, 4vw, 1.7rem);
       font-weight: 900;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #111;
       background: white;
       border: 4px solid #111;
-      padding: 0.6em 1em;
+      padding: 0.55em 1em;
       box-shadow: 6px 6px 0 #111;
       transition: transform 0.1s, box-shadow 0.1s;
       cursor: pointer;
@@ -95,11 +94,11 @@
     }
 
     .btn-menu.btn-jouer {
-      font-size: clamp(1.8rem, 8vw, 2.6rem);
+      font-size: clamp(1.6rem, 5vw, 2rem);
     }
 
     .menu-footer {
-      margin-top: 3rem;
+      margin-top: 2rem;
       font-family: 'Space Mono', monospace;
       font-size: 0.72rem;
       color: #111;
@@ -121,10 +120,22 @@
       color: #111;
       text-decoration: underline;
       padding: 0;
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
       opacity: 0.7;
     }
     .btn-shuffle:hover { opacity: 1; }
+
+    /* Neutralise les overrides desktop du style.css partagé */
+    @media (min-width: 768px) {
+      .menu-buttons {
+        flex-direction: column !important;
+        max-width: 100% !important;
+        gap: 0.75rem !important;
+      }
+      .btn-menu, .btn-menu.btn-jouer {
+        flex: none !important;
+      }
+    }
   </style>
 </head>
 <body class="menu-page">
