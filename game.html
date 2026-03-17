@@ -799,6 +799,7 @@ function makeDraggable(el, onDismiss) {
       el.style.transition = 'transform 0.35s cubic-bezier(.25,.8,.25,1)';
       el.style.transform = `translateY(100%)`;
       setTimeout(() => {
+        el.style.transition = '';
         el.style.transform = '';
         onDismiss();
       }, 350);
@@ -843,7 +844,11 @@ function makeDraggable(el, onDismiss) {
 makeDraggable(panel, () => {
   panel.classList.remove('visible');
   panel.style.display = 'none';
-  document.getElementById('rBar').style.width = '0%';
+  panel.style.transform = '';
+  drawPie(0, 0, 0);
+  document.getElementById('rPctSur').textContent  = '—';
+  document.getElementById('rPctCote').textContent = '—';
+  document.getElementById('rPctSous').textContent = '—';
   idx++;
   front.style.transition = 'none';
   front.style.transform  = '';
