@@ -35,7 +35,6 @@
       transition: background 0.5s ease;
     }
 
-    /* HEADER — couleur du thème */
     .header {
       display: flex;
       align-items: center;
@@ -69,7 +68,6 @@
     }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
-    /* CATEGORIES — couleur du thème */
     .cats {
       display: flex;
       gap: 6px;
@@ -100,7 +98,6 @@
       border-color: #111;
     }
 
-    /* CARD — plein écran */
     .card-zone {
       flex: 1;
       position: relative;
@@ -128,7 +125,6 @@
     }
     .card.front { z-index: 1; }
 
-    /* PHOTO — haut de la carte */
     .card-photo {
       flex: 1;
       position: relative;
@@ -146,7 +142,6 @@
       background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
     }
 
-    /* HINT overlays */
     .hint-over {
       position: absolute;
       inset: 0;
@@ -174,7 +169,6 @@
     .show-cote   .hint-cote   { opacity: 1; }
     .show-passer .hint-passer { opacity: 1; }
 
-    /* LABEL GAUCHE/DROITE sur la photo */
     .side-label {
       position: absolute;
       top: 50%;
@@ -194,7 +188,6 @@
     .card-zone.pulling-right .side-label.right { color: #fff; }
     .card-zone.pulling-left  .side-label.left  { color: rgba(255,255,255,0.9); }
 
-    /* BLOC TEXTE BAS — couleur thème */
     .card-info {
       background: var(--cat-bg);
       transition: background 0.5s ease;
@@ -218,7 +211,6 @@
       letter-spacing: -1px;
     }
 
-    /* AXIS LABELS — top flottant sur la photo */
     .axis-label.top {
       position: absolute;
       top: 14px;
@@ -235,7 +227,6 @@
     }
     .card-zone.pulling-up .axis-label.top { color: #fff; }
 
-    /* LABEL BAS — sur la photo juste au-dessus du bloc couleur */
     .photo-bottom-label {
       position: absolute;
       bottom: 12px;
@@ -253,7 +244,6 @@
     }
     .card-zone.pulling-down .photo-bottom-label { color: #fff; }
 
-    /* LOADING */
     .card-loading {
       position: absolute;
       inset: 0;
@@ -272,7 +262,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* RESULT PANEL */
+    /* ── RESULT PANEL ── */
     .result-panel {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -285,10 +275,17 @@
       z-index: 30;
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(.25,.8,.25,1);
+      cursor: grab;
+      touch-action: none;
     }
     .result-panel.visible {
       display: flex;
       transform: translateY(0);
+    }
+    .result-panel.dragging,
+    .tuto-panel.dragging {
+      transition: none !important;
+      cursor: grabbing;
     }
     .result-handle {
       width: 36px; height: 4px;
@@ -320,10 +317,9 @@
       font-family: 'Syne', sans-serif;
       line-height: 1;
     }
-    .verdict-pct.sur { color: var(--sur); }
+    .verdict-pct.sur  { color: var(--sur); }
     .verdict-pct.sous { color: var(--sous); }
     .verdict-pct.cote { color: #5055CC; }
-    .verdict-pct.sous { color: var(--sous); }
     .result-verdict {
       font-size: 13px;
       color: #888;
@@ -349,7 +345,7 @@
     }
     .bar-labels .lsous { color: var(--sous); font-weight: 500; }
     .bar-labels .lcote { color: #5055CC; font-weight: 500; }
-    .bar-labels .lsur { color: var(--sur); font-weight: 500; }
+    .bar-labels .lsur  { color: var(--sur); font-weight: 500; }
     .btn-next {
       width: 100%;
       padding: 14px;
@@ -365,6 +361,157 @@
       transition: opacity 0.15s, transform 0.1s;
     }
     .btn-next:active { opacity: 0.85; transform: scale(0.98); }
+
+    /* ── TUTORIAL PANEL ── */
+    /* Même structure que result-panel */
+    .tuto-panel {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 1.25rem 1.5rem 2.5rem;
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 40; /* au-dessus du result-panel */
+      transform: translateY(100%);
+      transition: transform 0.45s cubic-bezier(.25,.8,.25,1);
+      cursor: grab;
+      touch-action: none;
+    }
+    .tuto-panel.visible {
+      display: flex;
+      transform: translateY(0);
+    }
+
+    /* Scrim foncé derrière */
+    .tuto-scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      z-index: 39;
+      display: none;
+      transition: background 0.4s;
+    }
+    .tuto-scrim.visible {
+      display: block;
+      background: rgba(0,0,0,0.35);
+    }
+
+    .tuto-handle {
+      width: 36px; height: 4px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 999px;
+      margin: 0 auto 2px;
+      flex-shrink: 0;
+    }
+
+    .tuto-header {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .tuto-eyebrow {
+      font-size: 10px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .tuto-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #111;
+      line-height: 1.1;
+    }
+
+    /* Grille 2×2 des actions */
+    .tuto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .tuto-item {
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tuto-item.sur   { background: rgba(216,90,48,0.10); }
+    .tuto-item.sous  { background: rgba(59,140,78,0.10); }
+    .tuto-item.cote  { background: rgba(80,80,200,0.10); }
+    .tuto-item.passer{ background: rgba(0,0,0,0.05); }
+
+    .tuto-arrow {
+      font-size: 24px;
+      line-height: 1;
+      /* mini card illustrant la direction */
+    }
+
+    /* Mini carte avec flèche SVG animée */
+    .tuto-card-mini {
+      width: 44px; height: 52px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.08);
+      position: relative;
+      flex-shrink: 0;
+      overflow: visible;
+    }
+    .tuto-card-mini::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.6);
+    }
+
+    .tuto-direction {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1;
+    }
+    .tuto-item.sur    .tuto-direction { color: var(--sur); }
+    .tuto-item.sous   .tuto-direction { color: var(--sous); }
+    .tuto-item.cote   .tuto-direction { color: #5055CC; }
+    .tuto-item.passer .tuto-direction { color: #888; }
+
+    .tuto-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(0,0,0,0.5);
+      line-height: 1.3;
+    }
+    .tuto-item.sur    .tuto-label { color: rgba(216,90,48,0.8); }
+    .tuto-item.sous   .tuto-label { color: rgba(59,140,78,0.8); }
+    .tuto-item.cote   .tuto-label { color: rgba(80,80,200,0.8); }
+
+    /* Desc texte en bas */
+    .tuto-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.55;
+    }
+
+    .btn-tuto-start {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      flex-shrink: 0;
+    }
+    .btn-tuto-start:active { opacity: 0.85; transform: scale(0.98); }
 
     /* EMPTY */
     .empty-state {
@@ -418,7 +565,6 @@
   <div class="card-zone" id="cardZone">
     <div class="axis-label top">↑ Surcôté</div>
 
-
     <div class="card back" id="cardBack">
       <div class="card-photo" id="backPhoto"></div>
       <div class="card-info">
@@ -450,8 +596,7 @@
       <div>Reviens plus tard pour de nouvelles cartes.</div>
     </div>
 
-
-    <!-- Result panel inside card-zone so it overlays the card -->
+    <!-- Result panel -->
     <div class="result-panel" id="resultPanel">
       <div class="result-handle"></div>
       <div>
@@ -472,7 +617,50 @@
       </div>
       <button class="btn-next" id="btnNext">Carte suivante →</button>
     </div>
-  </div>
+
+    <!-- Tutorial scrim -->
+    <div class="tuto-scrim" id="tutoScrim"></div>
+
+    <!-- Tutorial panel -->
+    <div class="tuto-panel" id="tutoPanel">
+      <div class="tuto-handle"></div>
+
+      <div class="tuto-header">
+        <div class="tuto-eyebrow">Comment jouer</div>
+        <div class="tuto-title">Swipe pour voter</div>
+      </div>
+
+      <div class="tuto-grid">
+        <!-- Surcôté -->
+        <div class="tuto-item sur">
+          <div class="tuto-direction">↑ Surcôté</div>
+          <div class="tuto-label">Glisse vers le haut — t'en entends trop parler</div>
+        </div>
+        <!-- Sous-côté -->
+        <div class="tuto-item sous">
+          <div class="tuto-direction">↓ Sous-côté</div>
+          <div class="tuto-label">Glisse vers le bas — ça mérite plus de respect</div>
+        </div>
+        <!-- Côté -->
+        <div class="tuto-item cote">
+          <div class="tuto-direction">→ Côté</div>
+          <div class="tuto-label">Glisse à droite — ni trop ni trop peu</div>
+        </div>
+        <!-- Passer -->
+        <div class="tuto-item passer">
+          <div class="tuto-direction" style="color:#888">← Passer</div>
+          <div class="tuto-label">Glisse à gauche — tu passes sans voter</div>
+        </div>
+      </div>
+
+      <p class="tuto-desc">
+        Après chaque vote, tu verras ce que le monde entier en pense.
+      </p>
+
+      <button class="btn-tuto-start" id="btnTutoStart">C'est parti →</button>
+    </div>
+
+  </div><!-- /card-zone -->
 
 </div>
 
@@ -505,15 +693,140 @@ const CAT_COLORS = {
 
 let items = [], idx = 0, currentCat = 'Tout';
 let dragging = false, startX = 0, startY = 0, curX = 0, curY = 0;
+let tutoActive = false;
 
-const front = document.getElementById('cardFront');
-const zone  = document.getElementById('cardZone');
-const panel = document.getElementById('resultPanel');
+const front   = document.getElementById('cardFront');
+const zone    = document.getElementById('cardZone');
+const panel   = document.getElementById('resultPanel');
 const loading = document.getElementById('cardLoading');
-const app   = document.getElementById('app');
-const header = document.getElementById('header');
-const cats  = document.getElementById('cats');
+const app     = document.getElementById('app');
+const header  = document.getElementById('header');
+const cats    = document.getElementById('cats');
+const tutoPanel = document.getElementById('tutoPanel');
+const tutoScrim = document.getElementById('tutoScrim');
 
+// ── TUTORIAL ──────────────────────────────────────────
+const TUTO_KEY = 'surcote_tuto_seen';
+
+function showTuto() {
+  tutoActive = true;
+  tutoScrim.style.display = 'block';
+  tutoPanel.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    tutoScrim.classList.add('visible');
+    tutoPanel.classList.add('visible');
+  }));
+}
+
+function hideTuto() {
+  tutoScrim.classList.remove('visible');
+  tutoPanel.classList.remove('visible');
+  setTimeout(() => {
+    tutoPanel.style.display = 'none';
+    tutoScrim.style.display = 'none';
+    tutoActive = false;
+    localStorage.setItem(TUTO_KEY, '1');
+  }, 450);
+}
+
+document.getElementById('btnTutoStart').addEventListener('click', hideTuto);
+tutoScrim.addEventListener('click', hideTuto);
+
+// ── PANEL DRAG-TO-DISMISS ─────────────────────────────
+// Works for both result-panel and tuto-panel.
+// User drags the panel down; if they exceed DISMISS_THRESHOLD it flies out,
+// otherwise it snaps back.
+const DISMISS_THRESHOLD = 120; // px down to trigger dismiss
+
+function makeDraggable(el, onDismiss) {
+  let pdragging = false, pStartY = 0, pCurY = 0;
+
+  function pStart(y) {
+    pdragging = true;
+    pStartY = y;
+    pCurY = 0;
+    el.classList.add('dragging');
+  }
+
+  function pMove(y) {
+    if (!pdragging) return;
+    pCurY = Math.max(0, y - pStartY); // only allow downward drag
+    el.style.transform = `translateY(${pCurY}px)`;
+    // fade the scrim proportionally (for tuto only)
+    const scrim = document.getElementById('tutoScrim');
+    if (el === tutoPanel && scrim.classList.contains('visible')) {
+      const opacity = Math.max(0, 0.35 * (1 - pCurY / 300));
+      scrim.style.background = `rgba(0,0,0,${opacity})`;
+    }
+  }
+
+  function pEnd() {
+    if (!pdragging) return;
+    pdragging = false;
+    el.classList.remove('dragging');
+
+    if (pCurY > DISMISS_THRESHOLD) {
+      // Fly out then dismiss
+      el.style.transition = 'transform 0.35s cubic-bezier(.25,.8,.25,1)';
+      el.style.transform = `translateY(100%)`;
+      setTimeout(() => {
+        el.style.transform = '';
+        onDismiss();
+      }, 350);
+    } else {
+      // Snap back
+      el.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
+      el.style.transform = 'translateY(0)';
+      // Restore scrim
+      const scrim = document.getElementById('tutoScrim');
+      if (el === tutoPanel) {
+        scrim.style.background = 'rgba(0,0,0,0.35)';
+      }
+      setTimeout(() => { el.style.transform = ''; }, 320);
+    }
+    pCurY = 0;
+  }
+
+  // Mouse
+  el.addEventListener('mousedown', e => {
+    // Don't steal clicks on buttons/interactive children
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+    e.stopPropagation();
+    pStart(e.clientY);
+  });
+  window.addEventListener('mousemove', e => { if (pdragging) pMove(e.clientY); });
+  window.addEventListener('mouseup',   () => { if (pdragging) pEnd(); });
+
+  // Touch
+  el.addEventListener('touchstart', e => {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+    e.stopPropagation();
+    pStart(e.touches[0].clientY);
+  }, { passive: true });
+  el.addEventListener('touchmove', e => {
+    if (!pdragging) return;
+    pMove(e.touches[0].clientY);
+  }, { passive: true });
+  el.addEventListener('touchend', () => { if (pdragging) pEnd(); });
+}
+
+// Wire up result panel dismiss → advance to next card
+makeDraggable(panel, () => {
+  panel.classList.remove('visible');
+  panel.style.display = 'none';
+  document.getElementById('rBar').style.width = '0%';
+  idx++;
+  front.style.transition = 'none';
+  front.style.transform  = '';
+  front.style.opacity    = '1';
+  front.style.pointerEvents = '';
+  loadCards();
+});
+
+// Wire up tuto panel dismiss
+makeDraggable(tutoPanel, hideTuto);
+
+// ── COLORS ────────────────────────────────────────────
 function setCatBg(cat) {
   const color = CAT_COLORS[cat] || CAT_COLORS['Tout'];
   app.style.background    = color;
@@ -522,8 +835,25 @@ function setCatBg(cat) {
   document.querySelectorAll('.card-info').forEach(el => el.style.background = color);
 }
 
-const UNSPLASH_KEY = 'yxV07DS5GlXOConbKyAuXu2s66HRkHe4VtcOqP880Vc';
+// ── PHOTOS ────────────────────────────────────────────
+const PEXELS_KEY = 'vozlKrfNpo5cqSmvgNDTPXeUKCkxoYXKVKjhCTVBsvgZUaheW1jh9oNR';
+const photoCache = {};
 
+async function getPhoto(query) {
+  if (photoCache[query] !== undefined) return photoCache[query];
+  try {
+    const res = await fetch(
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=portrait`,
+      { headers: { Authorization: PEXELS_KEY } }
+    );
+    const data = await res.json();
+    const url = data.photos?.[0]?.src?.large || null;
+    photoCache[query] = url;
+    return url;
+  } catch { photoCache[query] = null; return null; }
+}
+
+// ── CARD SETUP ────────────────────────────────────────
 async function setCard(card, photoEl, nameEl, catEl) {
   if (!card) return;
   const existingImg = photoEl.querySelector('img');
@@ -532,9 +862,9 @@ async function setCard(card, photoEl, nameEl, catEl) {
   if (existingFb) existingFb.remove();
 
   nameEl.textContent = card.name;
-  catEl.textContent = card.category;
+  catEl.textContent  = card.category;
 
-  const url = card.image_url || null;
+  const url = await getPhoto(card.name);
   if (url) {
     const img = document.createElement('img');
     img.src = url;
@@ -593,35 +923,6 @@ async function castVote(itemId, vote) {
   loadTotalVotes();
 }
 
-async function setCard(card, photoEl, nameEl, catEl) {
-  if (!card) return;
-  const existingImg = photoEl.querySelector('img');
-  if (existingImg) existingImg.remove();
-  const existingFb = photoEl.querySelector('.card-photo-fallback');
-  if (existingFb) existingFb.remove();
-
-  nameEl.textContent = card.name;
-  catEl.textContent = card.category;
-
-  const url = await getPhoto(card.name);
-  if (url) {
-    const img = document.createElement('img');
-    img.src = url;
-    img.alt = card.name;
-    img.onerror = () => {
-      img.remove();
-      const fb = document.createElement('div');
-      fb.className = 'card-photo-fallback';
-      photoEl.appendChild(fb);
-    };
-    photoEl.appendChild(img);
-  } else {
-    const fb = document.createElement('div');
-    fb.className = 'card-photo-fallback';
-    photoEl.appendChild(fb);
-  }
-}
-
 async function loadCards() {
   const c = items[idx];
   const n = items[idx + 1];
@@ -642,41 +943,6 @@ async function showResult(vote) {
   await castVote(c.id, vote);
   const stats = await getVotesForItem(c.id);
   document.getElementById('rName').textContent = c.name;
-  const isSur = stats.sur >= 50;
-  const pct = isSur ? stats.sur : stats.sous;
-  const rPct = document.getElementById('rPct');
-  rPct.textContent = pct + '%';
-  rPct.className = 'verdict-pct ' + (isSur ? 'sur' : 'sous');
-  document.getElementById('rVerdict').textContent = `des gens pensent que c'est ${isSur ? 'surcôté' : 'sous-côté'} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
-  document.getElementById('rSous').textContent = stats.sous + '% sous-côté';
-  document.getElementById('rSur').textContent = stats.sur + '% surcôté';
-  panel.style.display = 'flex';
-  requestAnimationFrame(() => {
-    panel.classList.add('visible');
-    setTimeout(() => { document.getElementById('rBar').style.width = stats.sur + '%'; }, 100);
-  });
-}
-
-async function getVotesForItem(itemId) {
-  const { data } = await db.from('votes').select('vote').eq('item_id', itemId);
-  if (!data || data.length === 0) return { sur: 33, sous: 33, cote: 34, total: 0 };
-  const total = data.length;
-  const surCount  = data.filter(v => v.vote === 'sur').length;
-  const sousCount = data.filter(v => v.vote === 'sous').length;
-  const coteCount = data.filter(v => v.vote === 'cote').length;
-  return {
-    sur:  Math.round((surCount  / total) * 100),
-    sous: Math.round((sousCount / total) * 100),
-    cote: Math.round((coteCount / total) * 100),
-    total
-  };
-}
-
-async function showResult(vote) {
-  const c = items[idx];
-  await castVote(c.id, vote);
-  const stats = await getVotesForItem(c.id);
-  document.getElementById('rName').textContent = c.name;
 
   const max = Math.max(stats.sur, stats.sous, stats.cote);
   let verdict, cls;
@@ -687,10 +953,12 @@ async function showResult(vote) {
   const rPct = document.getElementById('rPct');
   rPct.textContent = max + '%';
   rPct.className = 'verdict-pct ' + cls;
-  document.getElementById('rVerdict').textContent = `des gens pensent que c'est ${verdict} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
+  document.getElementById('rVerdict').textContent =
+    `des gens pensent que c'est ${verdict} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
   document.getElementById('rSous').textContent = stats.sous + '% sous-côté';
   document.getElementById('rSur').textContent  = stats.sur  + '% surcôté';
   document.getElementById('rCote').textContent = stats.cote + '% côté';
+
   panel.style.display = 'flex';
   requestAnimationFrame(() => {
     panel.classList.add('visible');
@@ -698,29 +966,62 @@ async function showResult(vote) {
   });
 }
 
+// ── SWIPE LOGIC ───────────────────────────────────────
 function swipeCard(voteType, tx, ty) {
   front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
   front.style.transform  = `translate(${tx}px, ${ty}px) rotate(${tx * 0.03 + ty * -0.02}deg)`;
   front.style.opacity    = '0';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote');
+  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
   zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
   front.style.pointerEvents = 'none';
   showResult(voteType);
 }
 
-document.getElementById('btnNext').onclick = () => {
+function passer() {
+  front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
+  front.style.transform  = 'translateX(-500px) rotate(-12deg)';
+  front.style.opacity    = '0';
+  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
+  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
+  front.style.pointerEvents = 'none';
   idx++;
-  panel.classList.remove('visible');
-  setTimeout(() => { panel.style.display = 'none'; }, 400);
-  document.getElementById('rBar').style.width = '0%';
-  front.style.transition = 'none';
-  front.style.transform  = '';
-  front.style.opacity    = '1';
-  front.style.pointerEvents = '';
-  loadCards();
-};
+  setTimeout(() => {
+    front.style.transition = 'none';
+    front.style.transform  = '';
+    front.style.opacity    = '1';
+    front.style.pointerEvents = '';
+    loadCards();
+  }, 420);
+}
 
-function onStart(x, y) { dragging = true; startX = x; startY = y; front.style.transition = 'none'; }
+function reset() {
+  front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
+  front.style.transform  = '';
+  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
+  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
+}
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  panel.classList.remove('visible');
+  setTimeout(() => {
+    panel.style.display = 'none';
+    document.getElementById('rBar').style.width = '0%';
+    idx++;
+    front.style.transition = 'none';
+    front.style.transform  = '';
+    front.style.opacity    = '1';
+    front.style.pointerEvents = '';
+    loadCards();
+  }, 400);
+});
+
+// ── DRAG ──────────────────────────────────────────────
+function onStart(x, y) {
+  if (tutoActive) return; // bloquer le swipe pendant le tuto
+  dragging = true; startX = x; startY = y;
+  front.style.transition = 'none';
+}
+
 function onMove(x, y) {
   if (!dragging) return;
   curX = x - startX;
@@ -758,45 +1059,15 @@ function onEnd() {
   if (!dragging) return; dragging = false;
   const absX = Math.abs(curX), absY = Math.abs(curY);
   if (absX > absY) {
-    if (curX > 100) {
-      // Swipe droite = Côté
-      swipeCard('cote', 500, 0);
-    } else if (curX < -100) {
-      // Swipe gauche = Passer (pas de vote, juste avancer)
-      passer();
-    } else {
-      reset();
-    }
+    if      (curX >  100) swipeCard('cote', 500, 0);
+    else if (curX < -100) passer();
+    else reset();
   } else {
-    if (curY < -110)     swipeCard('sur',  0, -700);
-    else if (curY > 110) swipeCard('sous', 0,  700);
+    if      (curY < -110) swipeCard('sur',  0, -700);
+    else if (curY >  110) swipeCard('sous', 0,  700);
     else reset();
   }
   curX = 0; curY = 0;
-}
-
-function passer() {
-  front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
-  front.style.transform  = 'translateX(-500px) rotate(-12deg)';
-  front.style.opacity    = '0';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
-  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
-  front.style.pointerEvents = 'none';
-  // Pas de vote — on avance juste
-  idx++;
-  setTimeout(() => {
-    front.style.transition = 'none';
-    front.style.transform  = '';
-    front.style.opacity    = '1';
-    front.style.pointerEvents = '';
-    loadCards();
-  }, 420);
-}
-function reset() {
-  front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
-  front.style.transform  = '';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote');
-  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
 }
 
 front.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
@@ -806,6 +1077,7 @@ front.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touche
 front.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
 front.addEventListener('touchend',   onEnd);
 
+// ── CATEGORY PILLS ────────────────────────────────────
 document.querySelectorAll('.pill').forEach(p => {
   p.addEventListener('click', async () => {
     document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
@@ -825,11 +1097,18 @@ document.querySelectorAll('.pill').forEach(p => {
   });
 });
 
+// ── INIT ──────────────────────────────────────────────
 (async () => {
   loadTotalVotes();
   setCatBg('Tout');
   items = await loadItems('Tout');
   loadCards();
+
+  // Afficher le tuto seulement à la première visite
+  if (!localStorage.getItem(TUTO_KEY)) {
+    // petit délai pour laisser les cartes se charger visuellement
+    setTimeout(showTuto, 600);
+  }
 })();
 </script>
 </body>
