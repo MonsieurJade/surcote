@@ -181,11 +181,8 @@
       z-index: 5;
       font-family: 'Anton', Impact, sans-serif;
       font-size: 38px;
-      font-weight: 900;
-      color: #fff;
+      color: #111;
       letter-spacing: 0.02em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
     .hint-sur    { background: rgba(216,90,48,0.55); }
     .hint-sous   { background: rgba(59,140,78,0.55); }
@@ -205,16 +202,15 @@
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.1em;
-      text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
-      color: rgba(255,255,255,0.45);
+      color: rgba(0,0,0,0.35);
       white-space: nowrap;
     }
     .side-label.right { right: 14px; }
     .side-label.left  { left: 14px; }
-    .card-zone.pulling-right .side-label.right { color: #fff; }
-    .card-zone.pulling-left  .side-label.left  { color: #fff; }
+    .card-zone.pulling-right .side-label.right { color: #111; }
+    .card-zone.pulling-left  .side-label.left  { color: #111; }
 
     .axis-label.top {
       position: absolute;
@@ -225,12 +221,11 @@
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.1em;
-      text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
-      color: rgba(255,255,255,0.45);
+      color: rgba(0,0,0,0.35);
     }
-    .card-zone.pulling-up .axis-label.top { color: #fff; }
+    .card-zone.pulling-up .axis-label.top { color: #111; }
 
     .photo-bottom-label {
       position: absolute;
@@ -241,13 +236,17 @@
       font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.1em;
-      text-transform: uppercase;
       pointer-events: none;
       z-index: 10;
-      color: rgba(255,255,255,0.45);
+      color: rgba(0,0,0,0.35);
       white-space: nowrap;
     }
-    .card-zone.pulling-down .photo-bottom-label { color: #fff; }
+      pointer-events: none;
+      z-index: 10;
+      color: rgba(0,0,0,0.35);
+      white-space: nowrap;
+    }
+    .card-zone.pulling-down .photo-bottom-label { color: #111; }
 
     /* ── CARD INFO ── */
     .card-info {
@@ -271,7 +270,6 @@
       font-weight: 900;
       color: #111;
       line-height: 1;
-      text-transform: uppercase;
     }
 
     /* ── LOADING ── */
