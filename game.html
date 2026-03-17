@@ -2,1120 +2,197 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Surcôté</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    :root {
-      --sur: #D85A30;
-      --sous: #3B8C4E;
-      --cat-bg: #e8e0d5;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cat-bg);
-      transition: background 0.5s ease;
-    }
-
-    .app-wrapper {
-      width: 100%;
-      height: 100dvh;
+    /* ── MENU PRINCIPAL ── */
+    body.menu-page {
+      min-height: 100dvh;
       display: flex;
-      justify-content: center;
-      background: inherit;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 430px;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      background: var(--cat-bg);
-      transition: background 0.5s ease;
-    }
-
-    @media (min-width: 480px) {
-      .app { box-shadow: 6px 0 0 #111, -6px 0 0 #111; }
-    }
-
-    /* ── HEADER ── */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.9rem 1.25rem 0.6rem;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 20;
-      background: var(--cat-bg);
-      transition: background 0.5s ease;
-      border-bottom: 3px solid #111;
-    }
-    .logo {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: #111;
-      background: white;
-      border: 3px solid #111;
-      padding: 0.15em 0.45em;
-      box-shadow: 3px 3px 0 #111;
-      line-height: 1;
-      text-decoration: none;
-    }
-    .votes-badge {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #111;
-      background: white;
-      border: 2px solid #111;
-      padding: 0.2em 0.6em;
-      box-shadow: 2px 2px 0 #111;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #111;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
-
-    /* ── CATEGORIES ── */
-    .cats {
-      display: flex;
-      gap: 5px;
-      padding: 0.6rem 1.25rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-      flex-shrink: 0;
-      background: var(--cat-bg);
-      transition: background 0.5s ease;
-      border-bottom: 3px solid #111;
-    }
-    .cats::-webkit-scrollbar { display: none; }
-    .pill {
-      white-space: nowrap;
-      padding: 4px 12px;
-      border-radius: 0;
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border: 2px solid #111;
-      color: #111;
-      background: white;
-      transition: all 0.15s;
-      box-shadow: 2px 2px 0 #111;
-    }
-    .pill:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 #111; }
-    .pill.active {
-      background: #111;
-      color: #fff;
-      box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-    }
-
-    /* ── CARD ZONE ── */
-    .card-zone { flex: 1; position: relative; min-height: 0; }
-
-    .card {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      cursor: grab;
-      user-select: none;
-      touch-action: none;
-      will-change: transform;
-      overflow: hidden;
-    }
-    .card:active { cursor: grabbing; }
-    .card.back {
-      transform: scale(0.97) translateY(10px);
-      opacity: 0.5;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .card.front { z-index: 1; }
-
-    /* ── PHOTO ── */
-    .card-photo { flex: 1; position: relative; overflow: hidden; min-height: 0; }
-    .card-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-    .card-photo-fallback {
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));
-    }
-
-    /* ── HINT OVERLAYS ── */
-    .hint-over {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 8px;
-      opacity: 0;
-      transition: opacity 0.15s;
-      pointer-events: none;
-      z-index: 5;
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 38px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    }
-    .hint-sur    { background: rgba(216,90,48,0.55); }
-    .hint-sous   { background: rgba(59,140,78,0.55); }
-    .hint-cote   { background: rgba(80,80,200,0.55); }
-    .hint-passer { background: rgba(0,0,0,0.45); }
-    .show-sur    .hint-sur    { opacity: 1; }
-    .show-sous   .hint-sous   { opacity: 1; }
-    .show-cote   .hint-cote   { opacity: 1; }
-    .show-passer .hint-passer { opacity: 1; }
-
-    /* ── DIRECTION LABELS ── */
-    .side-label {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      pointer-events: none;
-      z-index: 10;
-      color: rgba(255,255,255,0.45);
-      white-space: nowrap;
-    }
-    .side-label.right { right: 14px; }
-    .side-label.left  { left: 14px; }
-    .card-zone.pulling-right .side-label.right { color: #fff; }
-    .card-zone.pulling-left  .side-label.left  { color: #fff; }
-
-    .axis-label.top {
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      pointer-events: none;
-      z-index: 10;
-      color: rgba(255,255,255,0.45);
-    }
-    .card-zone.pulling-up .axis-label.top { color: #fff; }
-
-    .photo-bottom-label {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      pointer-events: none;
-      z-index: 10;
-      color: rgba(255,255,255,0.45);
-      white-space: nowrap;
-    }
-    .card-zone.pulling-down .photo-bottom-label { color: #fff; }
-
-    /* ── CARD INFO ── */
-    .card-info {
-      background: var(--cat-bg);
-      transition: background 0.5s ease;
-      padding: 0.85rem 1.25rem 1rem;
-      flex-shrink: 0;
-      border-top: 3px solid #111;
-    }
-    .card-cat {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 10px;
-      color: rgba(0,0,0,0.4);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 2px;
-    }
-    .card-name {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: clamp(28px, 8vw, 38px);
-      font-weight: 900;
-      color: #111;
-      line-height: 1;
-      text-transform: uppercase;
-    }
-
-    /* ── LOADING ── */
-    .card-loading {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--cat-bg); z-index: 10;
-    }
-    .spinner {
-      width: 28px; height: 28px;
-      border: 3px solid rgba(0,0,0,0.15);
-      border-top-color: #111;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── RESULT PANEL ── */
-    .result-panel {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: #F5F0E8;
-      border-top: 4px solid #111;
-      padding: 1rem 1.25rem 2.5rem;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 30;
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(.25,.8,.25,1), background 0.5s ease;
-      cursor: grab;
-      touch-action: none;
-    }
-    .result-panel.visible { display: flex; transform: translateY(0); }
-    .result-panel.dragging, .tuto-panel.dragging {
-      transition: none !important; cursor: grabbing;
-    }
-    .result-handle {
-      width: 36px; height: 4px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 999px;
-      margin: 0 auto 2px;
-    }
-    .result-subject {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 10px;
-      color: rgba(0,0,0,0.45);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-    }
-    .result-name {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 24px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.01em;
-      color: #111;
-      line-height: 1;
-    }
-    .verdict-row { display: flex; align-items: baseline; gap: 10px; }
-    .verdict-pct {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 54px;
-      font-weight: 900;
-      line-height: 1;
-    }
-    .verdict-pct.sur  { color: var(--sur); }
-    .verdict-pct.sous { color: var(--sous); }
-    .verdict-pct.cote { color: #5055CC; }
-    .result-verdict {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: rgba(0,0,0,0.6);
-      line-height: 1.4;
-    }
-    .bar-wrap {
-      height: 8px;
-      background: rgba(0,0,0,0.15);
-      border: 2px solid #111;
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      background: #111;
-      width: 0%;
-      transition: width 1s cubic-bezier(.25,.8,.25,1);
-    }
-    .bar-labels {
-      display: flex;
-      justify-content: space-between;
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .bar-labels .lsous { color: var(--sous); }
-    .bar-labels .lcote { color: #5055CC; }
-    .bar-labels .lsur  { color: var(--sur); }
-    .btn-next {
-      width: 100%;
-      padding: 14px;
-      border: 3px solid #111;
-      background: #111;
-      color: #fff;
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-top: 2px;
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .btn-next:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 rgba(0,0,0,0.25); }
-
-    /* ── TUTORIAL PANEL ── */
-    .tuto-panel {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: #F5F0E8;
-      border-top: 4px solid #111;
-      padding: 1rem 1.25rem 2.5rem;
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 40;
-      transform: translateY(100%);
-      transition: transform 0.45s cubic-bezier(.25,.8,.25,1), background 0.5s ease;
-      cursor: grab;
-      touch-action: none;
-    }
-    .tuto-panel.visible { display: flex; transform: translateY(0); }
-
-    .tuto-scrim {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0);
-      z-index: 39; display: none;
-      transition: background 0.4s;
-    }
-    .tuto-scrim.visible { display: block; background: rgba(0,0,0,0.45); }
-
-    .tuto-handle {
-      width: 36px; height: 4px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 999px;
-      margin: 0 auto;
-      flex-shrink: 0;
-    }
-    .tuto-header { display: flex; flex-direction: column; gap: 2px; }
-    .tuto-eyebrow {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 10px;
-      color: rgba(0,0,0,0.45);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-    }
-    .tuto-title {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.01em;
-      color: #111;
-      line-height: 1;
-    }
-    .tuto-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .tuto-item {
-      border: 2px solid #111;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      background: rgba(255,255,255,0.45);
-      box-shadow: 3px 3px 0 #111;
-    }
-    .tuto-item.passer { background: rgba(0,0,0,0.06); }
-
-    .tuto-direction {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 18px;
-      font-weight: 900;
-      text-transform: uppercase;
-      line-height: 1;
-    }
-    .tuto-item.sur    .tuto-direction { color: var(--sur); }
-    .tuto-item.sous   .tuto-direction { color: var(--sous); }
-    .tuto-item.cote   .tuto-direction { color: #5055CC; }
-    .tuto-item.passer .tuto-direction { color: #555; }
-
-    .tuto-label {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      color: rgba(0,0,0,0.55);
-      line-height: 1.3;
-    }
-    .tuto-desc {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: rgba(0,0,0,0.6);
-      line-height: 1.5;
-    }
-    .btn-tuto-start {
-      width: 100%;
-      padding: 14px;
-      border: 3px solid #111;
-      background: #111;
-      color: #fff;
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
-      transition: transform 0.1s, box-shadow 0.1s;
-      flex-shrink: 0;
-    }
-    .btn-tuto-start:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 rgba(0,0,0,0.25); }
-
-    /* ── EMPTY STATE ── */
-    .empty-state {
-      display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      height: 100%;
+      padding: 2rem 1.5rem;
+      transition: background-color 0.4s ease;
+    }
+
+    /* Conteneur centré — cap strict à 380px */
+    .menu-inner {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .menu-logo {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: clamp(3rem, 10vw, 4.5rem);
+      font-weight: 900;
+      color: #111;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      line-height: 1;
+      border: 4px solid #111;
+      padding: 0.15em 0.4em;
+      background: white;
+      display: inline-block;
+      text-transform: uppercase;
+      margin-bottom: 0.6em;
+      box-shadow: 6px 6px 0 #111;
+    }
+
+    .menu-tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.7rem, 2vw, 0.85rem);
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: white;
+      border: 3px solid #111;
+      padding: 0.3em 0.8em;
+      margin-bottom: 2rem;
+      box-shadow: 4px 4px 0 #111;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column; /* toujours en colonne, même sur desktop */
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .btn-menu {
+      display: block;
       text-align: center;
-      padding: 2rem;
-    }
-    .empty-state .big { font-size: 48px; }
-    .empty-state .empty-title {
-      font-family: 'Black Han Sans', Impact, sans-serif;
-      font-size: 22px;
+      text-decoration: none;
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: clamp(1.4rem, 4vw, 1.7rem);
+      font-weight: 900;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #111;
-      letter-spacing: 0.02em;
+      background: white;
+      border: 4px solid #111;
+      padding: 0.55em 1em;
+      box-shadow: 6px 6px 0 #111;
+      transition: transform 0.1s, box-shadow 0.1s;
+      cursor: pointer;
     }
-    .empty-state .empty-sub {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: rgba(0,0,0,0.45);
+
+    .btn-menu:hover,
+    .btn-menu:focus {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 #111;
     }
-    .empty-state.visible { display: flex; }
+
+    .btn-menu:active {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 #111;
+    }
+
+    .btn-menu.btn-jouer {
+      font-size: clamp(1.6rem, 5vw, 2rem);
+    }
+
+    .menu-footer {
+      margin-top: 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: #111;
+      opacity: 0.6;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* shuffle button */
+    .btn-shuffle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #111;
+      text-decoration: underline;
+      padding: 0;
+      margin-top: 1.25rem;
+      opacity: 0.7;
+    }
+    .btn-shuffle:hover { opacity: 1; }
+
+    /* Neutralise les overrides desktop du style.css partagé */
+    @media (min-width: 768px) {
+      .menu-buttons {
+        flex-direction: column !important;
+        max-width: 100% !important;
+        gap: 0.75rem !important;
+      }
+      .btn-menu, .btn-menu.btn-jouer {
+        flex: none !important;
+      }
+    }
   </style>
 </head>
-<body>
-<div class="app-wrapper" id="appWrapper">
-<div class="app" id="app">
+<body class="menu-page">
 
-  <div class="header" id="header">
-    <div class="logo">Surcôté</div>
-    <div class="votes-badge">
-      <div class="dot"></div>
-      <span id="totalVotes">...</span> votes
-    </div>
-  </div>
+<div class="menu-inner">
+  <div class="menu-logo">SURCÔTÉ</div>
+  <div class="menu-tagline">Surcôté ou sous-côté ?</div>
 
-  <div class="cats" id="cats">
-    <div class="pill active" data-cat="Tout">Tout</div>
-    <div class="pill" data-cat="Mode">Mode</div>
-    <div class="pill" data-cat="Food">Food</div>
-    <div class="pill" data-cat="Voyage">Voyage</div>
-    <div class="pill" data-cat="Tech">Tech</div>
-    <div class="pill" data-cat="Musique">Musique</div>
-    <div class="pill" data-cat="Cinéma">Cinéma</div>
-    <div class="pill" data-cat="Sport">Sport</div>
-    <div class="pill" data-cat="Beauté">Beauté</div>
-    <div class="pill" data-cat="Vie quotidienne">Quotidien</div>
-    <div class="pill" data-cat="Animaux">Animaux</div>
-    <div class="pill" data-cat="Actions & Sensations">Actions</div>
-    <div class="pill" data-cat="Maison & Déco">Déco</div>
-    <div class="pill" data-cat="Nature & Écologie">Nature</div>
-    <div class="pill" data-cat="Bien-être & Santé">Bien-être</div>
-    <div class="pill" data-cat="Créativité & Hobbies">Créativité</div>
-    <div class="pill" data-cat="Soirées & Sorties">Soirées</div>
-    <div class="pill" data-cat="Enfance & Nostalgie">Nostalgie</div>
-  </div>
+  <nav class="menu-buttons">
+    <a href="game.html" class="btn-menu btn-jouer">▶ Jouer</a>
+    <a href="proposer.html" class="btn-menu">✚ Proposer</a>
+    <a href="infos.html" class="btn-menu">ℹ Infos</a>
+  </nav>
 
-  <div class="card-zone" id="cardZone">
-    <div class="axis-label top">↑ Surcôté</div>
+  <button class="btn-shuffle" onclick="randomColor()">🎲 Autre couleur</button>
 
-    <div class="card back" id="cardBack">
-      <div class="card-photo" id="backPhoto"></div>
-      <div class="card-info">
-        <div class="card-cat" id="backCat"></div>
-        <div class="card-name" id="backName"></div>
-      </div>
-    </div>
+  <div class="menu-footer">919 cartes · 18 catégories</div>
+</div>
 
-    <div class="card front" id="cardFront">
-      <div class="card-photo" id="frontPhoto">
-        <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
-        <div class="hint-over hint-sur">↑ Surcôté</div>
-        <div class="hint-over hint-sous">↓ Sous-côté</div>
-        <div class="hint-over hint-cote">Côté →</div>
-        <div class="hint-over hint-passer">← Passer</div>
-        <div class="side-label right">Côté →</div>
-        <div class="side-label left">← Passer</div>
-        <div class="photo-bottom-label">Sous-côté ↓</div>
-      </div>
-      <div class="card-info" id="frontInfo">
-        <div class="card-cat" id="frontCat"></div>
-        <div class="card-name" id="frontName"></div>
-      </div>
-    </div>
+  <script>
+    // Couleurs des thèmes (même palette que les catégories)
+    const THEME_COLORS = [
+      '#FF3B30', // Rouge vif – Mode
+      '#FF9500', // Orange – Food
+      '#FFCC00', // Jaune – Voyage
+      '#34C759', // Vert – Nature
+      '#00C7BE', // Turquoise – Bien-être
+      '#007AFF', // Bleu – Tech
+      '#5856D6', // Violet – Musique
+      '#FF2D55', // Rose – Beauté
+      '#AF52DE', // Mauve – Cinéma
+      '#FF6B35', // Orange foncé – Sport
+      '#30D158', // Vert clair – Animaux
+      '#64D2FF', // Bleu ciel – Déco
+      '#FFD60A', // Jaune vif – Soirées
+      '#FF453A', // Rouge sombre – Nostalgie
+      '#32ADE6', // Bleu – Quotidien
+      '#FF375F', // Rose fuchsia – Créativité
+      '#6C6C70', // Gris – Actions
+    ];
 
-    <div class="empty-state" id="emptyState">
-      <div class="big">🎉</div>
-      <div class="empty-title">C'est tout pour l'instant !</div>
-      <div class="empty-sub">Reviens plus tard pour de nouvelles cartes.</div>
-    </div>
-
-    <!-- Result panel -->
-    <div class="result-panel" id="resultPanel">
-      <div class="result-handle"></div>
-      <div>
-        <div class="result-subject">Le verdict mondial sur</div>
-        <div class="result-name" id="rName"></div>
-      </div>
-      <div class="verdict-row">
-        <div class="verdict-pct" id="rPct"></div>
-        <div class="result-verdict" id="rVerdict"></div>
-      </div>
-      <div>
-        <div class="bar-wrap"><div class="bar-fill" id="rBar"></div></div>
-        <div class="bar-labels">
-          <span class="lsous" id="rSous"></span>
-          <span class="lcote" id="rCote"></span>
-          <span class="lsur" id="rSur"></span>
-        </div>
-      </div>
-      <button class="btn-next" id="btnNext">Carte suivante →</button>
-    </div>
-
-    <!-- Tutorial scrim -->
-    <div class="tuto-scrim" id="tutoScrim"></div>
-
-    <!-- Tutorial panel -->
-    <div class="tuto-panel" id="tutoPanel">
-      <div class="tuto-handle"></div>
-
-      <div class="tuto-header">
-        <div class="tuto-eyebrow">Comment jouer</div>
-        <div class="tuto-title">Swipe pour voter</div>
-      </div>
-
-      <div class="tuto-grid">
-        <!-- Surcôté -->
-        <div class="tuto-item sur">
-          <div class="tuto-direction">↑ Surcôté</div>
-          <div class="tuto-label">Glisse vers le haut — t'en entends trop parler</div>
-        </div>
-        <!-- Sous-côté -->
-        <div class="tuto-item sous">
-          <div class="tuto-direction">↓ Sous-côté</div>
-          <div class="tuto-label">Glisse vers le bas — ça mérite plus de respect</div>
-        </div>
-        <!-- Côté -->
-        <div class="tuto-item cote">
-          <div class="tuto-direction">→ Côté</div>
-          <div class="tuto-label">Glisse à droite — ni trop ni trop peu</div>
-        </div>
-        <!-- Passer -->
-        <div class="tuto-item passer">
-          <div class="tuto-direction" style="color:#888">← Passer</div>
-          <div class="tuto-label">Glisse à gauche — tu passes sans voter</div>
-        </div>
-      </div>
-
-      <p class="tuto-desc">
-        Après chaque vote, tu verras ce que le monde entier en pense.
-      </p>
-
-      <button class="btn-tuto-start" id="btnTutoStart">C'est parti →</button>
-    </div>
-
-  </div><!-- /card-zone -->
-
-</div><!-- /app -->
-</div><!-- /app-wrapper -->
-
-<script>
-const SUPABASE_URL = 'https://rgtwretpvwtkviqjxcfc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndHdyZXRwdnd0a3ZpcWp4Y2ZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODE0OTgsImV4cCI6MjA4OTA1NzQ5OH0.4LUYXGMhQQ39Ie8ixtz5nP6vPCnyWaaEjoPgLyvH5TY';
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const CAT_COLORS = {
-  'Mode':                  '#FF6EC7',
-  'Food':                  '#FFB347',
-  'Voyage':                '#56D4E8',
-  'Tech':                  '#7B9FFF',
-  'Vie quotidienne':       '#7EE89A',
-  'Musique':               '#C77DFF',
-  'Cinéma':                '#FF7F7F',
-  'Sport':                 '#5BC8F5',
-  'Beauté':                '#FFB3D9',
-  'Animaux':               '#A8E6A3',
-  'Actions & Sensations':  '#FFD166',
-  'Maison & Déco':         '#F4A261',
-  'Nature & Écologie':     '#74C69D',
-  'Bien-être & Santé':     '#B5EAD7',
-  'Créativité & Hobbies':  '#FDCFE8',
-  'Soirées & Sorties':     '#FF9A9E',
-  'Enfance & Nostalgie':   '#FFEAA7',
-  'Tout':                  '#F5F0E8',
-};
-
-let items = [], idx = 0, currentCat = 'Tout';
-let dragging = false, startX = 0, startY = 0, curX = 0, curY = 0;
-let tutoActive = false;
-
-const front   = document.getElementById('cardFront');
-const zone    = document.getElementById('cardZone');
-const panel   = document.getElementById('resultPanel');
-const loading = document.getElementById('cardLoading');
-const app     = document.getElementById('app');
-const header  = document.getElementById('header');
-const cats    = document.getElementById('cats');
-const tutoPanel = document.getElementById('tutoPanel');
-const tutoScrim = document.getElementById('tutoScrim');
-
-// ── TUTORIAL ──────────────────────────────────────────
-const TUTO_KEY = 'surcote_tuto_seen';
-
-function showTuto() {
-  tutoActive = true;
-  tutoScrim.style.display = 'block';
-  tutoPanel.style.display = 'flex';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    tutoScrim.classList.add('visible');
-    tutoPanel.classList.add('visible');
-  }));
-}
-
-function hideTuto() {
-  tutoScrim.classList.remove('visible');
-  tutoPanel.classList.remove('visible');
-  setTimeout(() => {
-    tutoPanel.style.display = 'none';
-    tutoScrim.style.display = 'none';
-    tutoActive = false;
-    localStorage.setItem(TUTO_KEY, '1');
-  }, 450);
-}
-
-document.getElementById('btnTutoStart').addEventListener('click', hideTuto);
-tutoScrim.addEventListener('click', hideTuto);
-
-// ── PANEL DRAG-TO-DISMISS ─────────────────────────────
-// Works for both result-panel and tuto-panel.
-// User drags the panel down; if they exceed DISMISS_THRESHOLD it flies out,
-// otherwise it snaps back.
-const DISMISS_THRESHOLD = 120; // px down to trigger dismiss
-
-function makeDraggable(el, onDismiss) {
-  let pdragging = false, pStartY = 0, pCurY = 0;
-
-  function pStart(y) {
-    pdragging = true;
-    pStartY = y;
-    pCurY = 0;
-    el.classList.add('dragging');
-  }
-
-  function pMove(y) {
-    if (!pdragging) return;
-    pCurY = Math.max(0, y - pStartY); // only allow downward drag
-    el.style.transform = `translateY(${pCurY}px)`;
-    // fade the scrim proportionally (for tuto only)
-    const scrim = document.getElementById('tutoScrim');
-    if (el === tutoPanel && scrim.classList.contains('visible')) {
-      const opacity = Math.max(0, 0.35 * (1 - pCurY / 300));
-      scrim.style.background = `rgba(0,0,0,${opacity})`;
+    function randomColor() {
+      const color = THEME_COLORS[Math.floor(Math.random() * THEME_COLORS.length)];
+      document.body.style.backgroundColor = color;
+      localStorage.setItem('surcote_menu_color', color);
     }
-  }
 
-  function pEnd() {
-    if (!pdragging) return;
-    pdragging = false;
-    el.classList.remove('dragging');
-
-    if (pCurY > DISMISS_THRESHOLD) {
-      // Fly out then dismiss
-      el.style.transition = 'transform 0.35s cubic-bezier(.25,.8,.25,1)';
-      el.style.transform = `translateY(100%)`;
-      setTimeout(() => {
-        el.style.transform = '';
-        onDismiss();
-      }, 350);
+    // Au chargement : couleur mémorisée ou aléatoire
+    const saved = localStorage.getItem('surcote_menu_color');
+    if (saved) {
+      document.body.style.backgroundColor = saved;
     } else {
-      // Snap back
-      el.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
-      el.style.transform = 'translateY(0)';
-      // Restore scrim
-      const scrim = document.getElementById('tutoScrim');
-      if (el === tutoPanel) {
-        scrim.style.background = 'rgba(0,0,0,0.35)';
-      }
-      setTimeout(() => { el.style.transform = ''; }, 320);
+      randomColor();
     }
-    pCurY = 0;
-  }
 
-  // Mouse
-  el.addEventListener('mousedown', e => {
-    // Don't steal clicks on buttons/interactive children
-    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-    e.stopPropagation();
-    pStart(e.clientY);
-  });
-  window.addEventListener('mousemove', e => { if (pdragging) pMove(e.clientY); });
-  window.addEventListener('mouseup',   () => { if (pdragging) pEnd(); });
-
-  // Touch
-  el.addEventListener('touchstart', e => {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
-    e.stopPropagation();
-    pStart(e.touches[0].clientY);
-  }, { passive: true });
-  el.addEventListener('touchmove', e => {
-    if (!pdragging) return;
-    pMove(e.touches[0].clientY);
-  }, { passive: true });
-  el.addEventListener('touchend', () => { if (pdragging) pEnd(); });
-}
-
-// Wire up result panel dismiss → advance to next card
-makeDraggable(panel, () => {
-  panel.classList.remove('visible');
-  panel.style.display = 'none';
-  document.getElementById('rBar').style.width = '0%';
-  idx++;
-  front.style.transition = 'none';
-  front.style.transform  = '';
-  front.style.opacity    = '1';
-  front.style.pointerEvents = '';
-  loadCards();
-});
-
-// Wire up tuto panel dismiss
-makeDraggable(tutoPanel, hideTuto);
-
-// ── COLORS ────────────────────────────────────────────
-function setCatBg(cat) {
-  const color = CAT_COLORS[cat] || CAT_COLORS['Tout'];
-  document.body.style.background         = color;
-  const wrapper = document.getElementById('appWrapper');
-  if (wrapper) wrapper.style.background  = color;
-  app.style.background    = color;
-  header.style.background = color;
-  cats.style.background   = color;
-  document.querySelectorAll('.card-info').forEach(el => el.style.background = color);
-  // Panels couleur de la catégorie
-  panel.style.background     = color;
-  tutoPanel.style.background = color;
-}
-
-// ── PHOTOS ────────────────────────────────────────────
-const PEXELS_KEY = 'vozlKrfNpo5cqSmvgNDTPXeUKCkxoYXKVKjhCTVBsvgZUaheW1jh9oNR';
-const photoCache = {};
-
-async function getPhoto(card) {
-  // 1. Supabase a déjà l'URL → on l'utilise directement, 0 requête Pexels
-  if (card.image_url) return card.image_url;
-
-  // 2. Sinon on cherche sur Pexels (et on met en cache pour cette session)
-  const query = card.name;
-  if (photoCache[query] !== undefined) return photoCache[query];
-  try {
-    const res = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=portrait`,
-      { headers: { Authorization: PEXELS_KEY } }
-    );
-    const data = await res.json();
-    const url = data.photos?.[0]?.src?.large || null;
-    photoCache[query] = url;
-    return url;
-  } catch { photoCache[query] = null; return null; }
-}
-
-// ── CARD SETUP ────────────────────────────────────────
-async function setCard(card, photoEl, nameEl, catEl) {
-  if (!card) return;
-  const existingImg = photoEl.querySelector('img');
-  if (existingImg) existingImg.remove();
-  const existingFb = photoEl.querySelector('.card-photo-fallback');
-  if (existingFb) existingFb.remove();
-
-  nameEl.textContent = card.name;
-  catEl.textContent  = card.category;
-
-  const url = await getPhoto(card);
-  if (url) {
-    const img = document.createElement('img');
-    img.src = url;
-    img.alt = card.name;
-    img.onerror = () => {
-      img.remove();
-      const fb = document.createElement('div');
-      fb.className = 'card-photo-fallback';
-      photoEl.appendChild(fb);
-    };
-    photoEl.appendChild(img);
-  } else {
-    const fb = document.createElement('div');
-    fb.className = 'card-photo-fallback';
-    photoEl.appendChild(fb);
-  }
-}
-
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-async function loadItems(cat) {
-  let q = db.from('items').select('*');
-  if (cat !== 'Tout') q = q.eq('category', cat);
-  const { data } = await q;
-  return shuffle(data || []);
-}
-
-async function loadTotalVotes() {
-  const { count } = await db.from('votes').select('*', { count: 'exact', head: true });
-  document.getElementById('totalVotes').textContent = (count || 0).toLocaleString('fr-FR');
-}
-
-async function getVotesForItem(itemId) {
-  const { data } = await db.from('votes').select('vote').eq('item_id', itemId);
-  if (!data || data.length === 0) return { sur: 33, sous: 33, cote: 34, total: 0 };
-  const total = data.length;
-  const surCount  = data.filter(v => v.vote === 'sur').length;
-  const sousCount = data.filter(v => v.vote === 'sous').length;
-  const coteCount = data.filter(v => v.vote === 'cote').length;
-  return {
-    sur:  Math.round((surCount  / total) * 100),
-    sous: Math.round((sousCount / total) * 100),
-    cote: Math.round((coteCount / total) * 100),
-    total
-  };
-}
-
-async function castVote(itemId, vote) {
-  await db.from('votes').insert({ item_id: itemId, vote });
-  loadTotalVotes();
-}
-
-async function loadCards() {
-  const c = items[idx];
-  const n = items[idx + 1];
-  if (!c) {
-    front.style.display = 'none';
-    document.getElementById('cardBack').style.display = 'none';
-    document.getElementById('emptyState').classList.add('visible');
-    return;
-  }
-  loading.style.display = 'none';
-  setCatBg(c.category);
-  setCard(c, document.getElementById('frontPhoto'), document.getElementById('frontName'), document.getElementById('frontCat'));
-  if (n) setCard(n, document.getElementById('backPhoto'), document.getElementById('backName'), document.getElementById('backCat'));
-}
-
-async function showResult(vote) {
-  const c = items[idx];
-  await castVote(c.id, vote);
-  const stats = await getVotesForItem(c.id);
-  document.getElementById('rName').textContent = c.name;
-
-  const max = Math.max(stats.sur, stats.sous, stats.cote);
-  let verdict, cls;
-  if (max === stats.sur)       { verdict = 'surcôté';   cls = 'sur'; }
-  else if (max === stats.sous) { verdict = 'sous-côté'; cls = 'sous'; }
-  else                         { verdict = 'côté';      cls = 'cote'; }
-
-  const rPct = document.getElementById('rPct');
-  rPct.textContent = max + '%';
-  rPct.className = 'verdict-pct ' + cls;
-  document.getElementById('rVerdict').textContent =
-    `des gens pensent que c'est ${verdict} (${stats.total} vote${stats.total > 1 ? 's' : ''})`;
-  document.getElementById('rSous').textContent = stats.sous + '% sous-côté';
-  document.getElementById('rSur').textContent  = stats.sur  + '% surcôté';
-  document.getElementById('rCote').textContent = stats.cote + '% côté';
-
-  panel.style.display = 'flex';
-  requestAnimationFrame(() => {
-    panel.classList.add('visible');
-    setTimeout(() => { document.getElementById('rBar').style.width = stats.sur + '%'; }, 100);
-  });
-}
-
-// ── SWIPE LOGIC ───────────────────────────────────────
-function swipeCard(voteType, tx, ty) {
-  front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
-  front.style.transform  = `translate(${tx}px, ${ty}px) rotate(${tx * 0.03 + ty * -0.02}deg)`;
-  front.style.opacity    = '0';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
-  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
-  front.style.pointerEvents = 'none';
-  showResult(voteType);
-}
-
-function passer() {
-  front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
-  front.style.transform  = 'translateX(-500px) rotate(-12deg)';
-  front.style.opacity    = '0';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
-  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
-  front.style.pointerEvents = 'none';
-  idx++;
-  setTimeout(() => {
-    front.style.transition = 'none';
-    front.style.transform  = '';
-    front.style.opacity    = '1';
-    front.style.pointerEvents = '';
-    loadCards();
-  }, 420);
-}
-
-function reset() {
-  front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
-  front.style.transform  = '';
-  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
-  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
-}
-
-document.getElementById('btnNext').addEventListener('click', () => {
-  panel.classList.remove('visible');
-  setTimeout(() => {
-    panel.style.display = 'none';
-    document.getElementById('rBar').style.width = '0%';
-    idx++;
-    front.style.transition = 'none';
-    front.style.transform  = '';
-    front.style.opacity    = '1';
-    front.style.pointerEvents = '';
-    loadCards();
-  }, 400);
-});
-
-// ── DRAG ──────────────────────────────────────────────
-function onStart(x, y) {
-  if (tutoActive) return; // bloquer le swipe pendant le tuto
-  dragging = true; startX = x; startY = y;
-  front.style.transition = 'none';
-}
-
-function onMove(x, y) {
-  if (!dragging) return;
-  curX = x - startX;
-  curY = y - startY;
-  const absX = Math.abs(curX), absY = Math.abs(curY);
-
-  if (absX > absY) {
-    front.style.transform = `translateX(${curX}px) rotate(${curX * 0.04}deg)`;
-    if (curX > 60) {
-      front.classList.add('show-cote');
-      front.classList.remove('show-passer', 'show-sur', 'show-sous');
-      zone.classList.add('pulling-right');
-      zone.classList.remove('pulling-left', 'pulling-up', 'pulling-down');
-    } else if (curX < -60) {
-      front.classList.add('show-passer');
-      front.classList.remove('show-cote', 'show-sur', 'show-sous');
-      zone.classList.add('pulling-left');
-      zone.classList.remove('pulling-right', 'pulling-up', 'pulling-down');
-    } else {
-      front.classList.remove('show-cote', 'show-passer');
-      zone.classList.remove('pulling-right', 'pulling-left');
-    }
-  } else {
-    front.style.transform = `translateY(${curY}px) rotate(${curY * 0.012}deg)`;
-    front.classList.toggle('show-sur',  curY < -70);
-    front.classList.toggle('show-sous', curY > 70);
-    front.classList.remove('show-cote', 'show-passer');
-    zone.classList.toggle('pulling-up',   curY < -70);
-    zone.classList.toggle('pulling-down', curY > 70);
-    zone.classList.remove('pulling-right', 'pulling-left');
-  }
-}
-
-function onEnd() {
-  if (!dragging) return; dragging = false;
-  const absX = Math.abs(curX), absY = Math.abs(curY);
-  if (absX > absY) {
-    if      (curX >  100) swipeCard('cote', 500, 0);
-    else if (curX < -100) passer();
-    else reset();
-  } else {
-    if      (curY < -110) swipeCard('sur',  0, -700);
-    else if (curY >  110) swipeCard('sous', 0,  700);
-    else reset();
-  }
-  curX = 0; curY = 0;
-}
-
-front.addEventListener('mousedown',  e => onStart(e.clientX, e.clientY));
-window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientX, e.clientY); });
-window.addEventListener('mouseup',   onEnd);
-front.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
-front.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
-front.addEventListener('touchend',   onEnd);
-
-// ── CATEGORY PILLS ────────────────────────────────────
-document.querySelectorAll('.pill').forEach(p => {
-  p.addEventListener('click', async () => {
-    document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    currentCat = p.dataset.cat;
-    idx = 0;
-    panel.classList.remove('visible');
-    panel.style.display = 'none';
-    loading.style.display = 'flex';
-    front.style.cssText = '';
-    document.getElementById('emptyState').classList.remove('visible');
-    front.style.display = '';
-    document.getElementById('cardBack').style.display = '';
-    setCatBg(currentCat);
-    items = await loadItems(currentCat);
-    loadCards();
-  });
-});
-
-// ── INIT ──────────────────────────────────────────────
-(async () => {
-  loadTotalVotes();
-  setCatBg('Tout');
-  items = await loadItems('Tout');
-  loadCards();
-
-  // Afficher le tuto seulement à la première visite
-  if (!localStorage.getItem(TUTO_KEY)) {
-    // petit délai pour laisser les cartes se charger visuellement
-    setTimeout(showTuto, 600);
-  }
-})();
-</script>
+    // Nouveau swipe à chaque visite (couleur fraîche)
+    window.addEventListener('pageshow', () => randomColor());
+  </script>
 </body>
 </html>
