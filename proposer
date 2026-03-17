@@ -364,6 +364,7 @@
           <option value="Créativité">Créativité</option>
           <option value="Soirées">Soirées</option>
           <option value="Nostalgie">Nostalgie</option>
+          <option value="Autre">Autre</option>
         </select>
       </div>
     </div>
@@ -425,7 +426,7 @@
       'Sport': '#FF6B35', 'Beauté': '#FF2D55', 'Quotidien': '#32ADE6',
       'Animaux': '#30D158', 'Actions': '#6C6C70', 'Déco': '#64D2FF',
       'Nature': '#34C759', 'Bien-être': '#00C7BE', 'Créativité': '#FF375F',
-      'Soirées': '#FFD60A', 'Nostalgie': '#FF453A',
+      'Soirées': '#FFD60A', 'Nostalgie': '#FF453A', 'Autre': '#CCCCCC',
     };
 
     // Live preview
