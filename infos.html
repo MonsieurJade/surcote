@@ -4,489 +4,476 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Infos – Surcôté</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    body.infos-page {
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
       min-height: 100dvh;
+      font-family: 'DM Sans', sans-serif;
       background-color: #5856D6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1.25rem 4rem;
+      transition: background-color 0.4s ease;
     }
 
-    .page-header {
-      width: 100%;
-      max-width: 560px;
+    .page {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 4rem;
+    }
+
+    /* ── HEADER ── */
+    .header {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 2rem;
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 3px solid #111;
+      position: sticky;
+      top: 0;
+      background-color: #5856D6;
+      z-index: 10;
+      transition: background-color 0.4s ease;
     }
 
     .btn-back {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1.4rem;
-      font-weight: 900;
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 1rem;
       color: #111;
-      background: white;
-      border: 3px solid #111;
-      padding: 0.3em 0.6em;
-      box-shadow: 4px 4px 0 #111;
+      background: transparent;
+      border: 2px solid #111;
+      padding: 0.3em 0.7em;
       text-decoration: none;
       line-height: 1;
-      transition: transform 0.1s, box-shadow 0.1s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: background 0.15s;
+      flex-shrink: 0;
     }
-    .btn-back:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+    .btn-back:hover { background: rgba(0,0,0,0.08); }
 
     .page-title {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: clamp(1.6rem, 7vw, 2.4rem);
-      font-weight: 900;
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: clamp(1.5rem, 7vw, 2rem);
       text-transform: uppercase;
+      letter-spacing: 0.02em;
       color: #111;
       line-height: 1;
     }
 
-    /* ─ SECTION BLOCK ─ */
-    .info-block {
-      width: 100%;
-      max-width: 560px;
-      background: white;
-      border: 4px solid #111;
-      box-shadow: 8px 8px 0 #111;
-      margin-bottom: 1.5rem;
+    /* ── SECTIONS ── */
+    .section {
+      border-bottom: 3px solid #111;
+      padding: 1.25rem;
     }
+    .section:last-child { border-bottom: none; }
 
-    .info-block-header {
-      background: #111;
-      padding: 0.5em 1em;
-    }
-    .info-block-header h2 {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
+    .section-title {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: white;
-      margin: 0;
+      letter-spacing: 0.18em;
+      color: rgba(0,0,0,0.45);
+      margin-bottom: 1rem;
     }
 
-    .info-block-body {
-      padding: 1.25rem 1.25rem;
-    }
-
-    /* ─ ABOUT ─ */
-    .about-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.88rem;
-      line-height: 1.8;
-      color: #111;
-    }
-
+    /* ── STATS ── */
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-top: 1rem;
+      gap: 8px;
     }
-
     .stat-box {
-      border: 3px solid #111;
-      padding: 0.6em 0.4em;
+      border: 2px solid #111;
+      padding: 0.75em 0.5em;
       text-align: center;
     }
     .stat-num {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1.6rem;
-      font-weight: 900;
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 2rem;
       color: #111;
       line-height: 1;
       display: block;
     }
     .stat-label {
-      font-family: 'Space Mono', monospace;
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #555;
+      letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.5);
       display: block;
-      margin-top: 0.2em;
+      margin-top: 0.25em;
     }
 
-    /* ─ SWIPE GUIDE ─ */
+    /* ── ABOUT TEXT ── */
+    .about-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #111;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── SWIPE GUIDE ── */
     .swipe-row {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.6em 0;
-      border-bottom: 2px solid #f0f0f0;
+      gap: 1rem;
+      padding: 0.75em 0;
+      border-bottom: 2px solid rgba(0,0,0,0.12);
     }
     .swipe-row:last-child { border-bottom: none; }
 
-    .swipe-icon {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1.2rem;
+    .swipe-arrow {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 1.1rem;
       font-weight: 900;
-      min-width: 40px;
-      text-align: center;
-      background: #111;
-      color: white;
-      padding: 0.2em 0.3em;
-    }
-
-    .swipe-desc {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.82rem;
-      color: #111;
-      line-height: 1.4;
-    }
-    .swipe-desc strong {
-      font-weight: 700;
-      display: block;
-    }
-
-    /* ─ CHANGELOG ─ */
-    .changelog-entry {
-      padding: 0.8em 0;
-      border-bottom: 2px solid #f0f0f0;
-    }
-    .changelog-entry:last-child { border-bottom: none; }
-
-    .changelog-version {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      color: #111;
-      letter-spacing: 0.05em;
-    }
-    .changelog-date {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      color: #888;
-      margin-left: 0.5em;
-    }
-    .changelog-badge {
-      display: inline-block;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 0.15em 0.5em;
+      width: 44px;
+      height: 44px;
       border: 2px solid #111;
-      margin-left: 0.4em;
-      vertical-align: middle;
-    }
-    .changelog-badge.new { background: #34C759; }
-    .changelog-badge.fix { background: #FF9500; }
-    .changelog-badge.update { background: #007AFF; color: white; border-color: #005AC1; }
-
-    .changelog-list {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.8rem;
-      line-height: 1.7;
-      color: #333;
-      margin: 0.4em 0 0 0;
-      padding: 0;
-      list-style: none;
-    }
-    .changelog-list li::before {
-      content: '→ ';
-      font-weight: 700;
-      color: #111;
-    }
-
-    /* ─ CREDITS ─ */
-    .credit-row {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 0.45em 0;
-      border-bottom: 2px solid #f0f0f0;
-      gap: 0.5rem;
-    }
-    .credit-row:last-child { border-bottom: none; }
-
-    .credit-role {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #888;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
+      color: white;
     }
-    .credit-name {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 1rem;
-      font-weight: 900;
+    .swipe-arrow.sur   { background: #D85A30; }
+    .swipe-arrow.sous  { background: #3B8C4E; }
+    .swipe-arrow.cote  { background: #5055CC; }
+    .swipe-arrow.pass  { background: #111; }
+
+    .swipe-text strong {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: #111;
-      text-align: right;
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.2em;
+    }
+    .swipe-text span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      color: rgba(0,0,0,0.55);
     }
 
-    /* ─ CATEGORIES GRID ─ */
+    /* ── CATEGORIES ── */
     .cat-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 0.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
     }
-
     .cat-chip {
-      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
-      font-size: 0.85rem;
-      font-weight: 900;
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: #111;
       border: 2px solid #111;
-      padding: 0.35em 0.5em;
+      padding: 0.4em 0.3em;
       text-align: center;
-      line-height: 1;
+      line-height: 1.1;
     }
 
-    /* ─ LEGAL ─ */
-    .legal-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      line-height: 1.7;
-      color: #555;
+    /* ── CHANGELOG ── */
+    .changelog-entry {
+      padding: 0.9em 0;
+      border-bottom: 2px solid rgba(0,0,0,0.12);
     }
-    .legal-text a {
+    .changelog-entry:last-child { border-bottom: none; }
+
+    .changelog-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .changelog-version {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
       color: #111;
-      font-weight: 700;
+      letter-spacing: 0.04em;
     }
+    .changelog-date {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(0,0,0,0.45);
+    }
+    .changelog-badge {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.15em 0.5em;
+      border: 2px solid #111;
+      color: #111;
+    }
+    .changelog-badge.new { background: #A8FF3E; }
+    .changelog-badge.fix { background: #FF9500; }
+
+    .changelog-list {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+      list-style: none;
+      padding: 0;
+    }
+    .changelog-list li::before {
+      content: '→ ';
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      color: #111;
+    }
+
+    /* ── CREDITS ── */
+    .credit-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.55em 0;
+      border-bottom: 2px solid rgba(0,0,0,0.12);
+      gap: 0.5rem;
+    }
+    .credit-row:last-child { border-bottom: none; }
+    .credit-role {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: rgba(0,0,0,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      flex-shrink: 0;
+    }
+    .credit-name {
+      font-family: 'Black Han Sans', Impact, sans-serif;
+      font-size: 1rem;
+      color: #111;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    /* ── LEGAL ── */
+    .legal-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.55);
+    }
+    .legal-text a { color: #111; font-weight: 700; text-decoration: none; border-bottom: 1px solid #111; }
   </style>
 </head>
-<body class="infos-page">
+<body>
+<div class="page">
 
-  <div class="page-header">
-    <a href="index.html" class="btn-back">←</a>
-    <div class="page-title">ℹ Infos</div>
+  <div class="header" id="pageHeader">
+    <a href="index.html" class="btn-back">← Retour</a>
+    <div class="page-title">Infos</div>
   </div>
 
   <!-- À PROPOS -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>À propos</h2></div>
-    <div class="info-block-body">
-      <p class="about-text">
-        <strong>Surcôté</strong> est un jeu de swipe qui te pose une question simple :<br/>
-        cette chose est-elle <em>surcôtée</em>, <em>sous-côtée</em>, ou juste <em>comme il faut</em> ?
-      </p>
-      <p class="about-text" style="margin-top:0.8rem">
-        Glisse, vote, et vois si le monde est d'accord avec toi.
-      </p>
-      <div class="stat-grid">
-        <div class="stat-box">
-          <span class="stat-num" id="statItems">919</span>
-          <span class="stat-label">Cartes</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-num">18</span>
-          <span class="stat-label">Catégories</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-num" id="statVotes">—</span>
-          <span class="stat-label">Votes</span>
-        </div>
+  <div class="section">
+    <div class="section-title">À propos</div>
+    <p class="about-text">
+      Surcôté te pose une question simple : cette chose est-elle <strong>surcôtée</strong>, <strong>sous-côtée</strong>, ou juste comme il faut ? Glisse, vote, et vois si le monde est d'accord avec toi.
+    </p>
+    <div class="stat-grid">
+      <div class="stat-box">
+        <span class="stat-num">919</span>
+        <span class="stat-label">Cartes</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">18</span>
+        <span class="stat-label">Catégories</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num" id="statVotes">—</span>
+        <span class="stat-label">Votes</span>
       </div>
     </div>
   </div>
 
   <!-- COMMENT JOUER -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>Comment jouer</h2></div>
-    <div class="info-block-body">
-      <div class="swipe-row">
-        <div class="swipe-icon">↑</div>
-        <div class="swipe-desc">
-          <strong>Swipe vers le haut</strong>
-          Surcôté — t'en entends trop parler
-        </div>
+  <div class="section">
+    <div class="section-title">Comment jouer</div>
+    <div class="swipe-row">
+      <div class="swipe-arrow sur">↑</div>
+      <div class="swipe-text">
+        <strong>Surcôté</strong>
+        <span>Swipe vers le haut — t'en entends trop parler</span>
       </div>
-      <div class="swipe-row">
-        <div class="swipe-icon">↓</div>
-        <div class="swipe-desc">
-          <strong>Swipe vers le bas</strong>
-          Sous-côté — ça mérite plus de respect
-        </div>
+    </div>
+    <div class="swipe-row">
+      <div class="swipe-arrow sous">↓</div>
+      <div class="swipe-text">
+        <strong>Sous-côté</strong>
+        <span>Swipe vers le bas — ça mérite plus de respect</span>
       </div>
-      <div class="swipe-row">
-        <div class="swipe-icon" style="background:#34C759">→</div>
-        <div class="swipe-desc">
-          <strong>Swipe à droite</strong>
-          Côté — ni trop, ni trop peu
-        </div>
+    </div>
+    <div class="swipe-row">
+      <div class="swipe-arrow cote">→</div>
+      <div class="swipe-text">
+        <strong>Côté</strong>
+        <span>Swipe à droite — ni trop, ni trop peu</span>
       </div>
-      <div class="swipe-row">
-        <div class="swipe-icon" style="background:#888">←</div>
-        <div class="swipe-desc">
-          <strong>Swipe à gauche</strong>
-          Passer — je sais pas / je m'en fiche
-        </div>
+    </div>
+    <div class="swipe-row">
+      <div class="swipe-arrow pass">←</div>
+      <div class="swipe-text">
+        <strong>Passer</strong>
+        <span>Swipe à gauche — sans voter</span>
       </div>
     </div>
   </div>
 
   <!-- CATÉGORIES -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>Catégories</h2></div>
-    <div class="info-block-body">
-      <div class="cat-grid" id="catGrid"></div>
-    </div>
+  <div class="section">
+    <div class="section-title">Catégories</div>
+    <div class="cat-grid" id="catGrid"></div>
   </div>
 
-  <!-- NOTES DE MISE À JOUR -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>Notes de mise à jour</h2></div>
-    <div class="info-block-body">
+  <!-- CHANGELOG -->
+  <div class="section">
+    <div class="section-title">Mises à jour</div>
 
-      <div class="changelog-entry">
+    <div class="changelog-entry">
+      <div class="changelog-top">
         <span class="changelog-version">v1.2</span>
         <span class="changelog-date">Mars 2025</span>
-        <span class="changelog-badge new">NEW</span>
-        <ul class="changelog-list">
-          <li>Page PROPOSER : soumets ta propre carte</li>
-          <li>Page INFOS : crédits & changelog</li>
-          <li>Menu : fond couleur aléatoire par thème</li>
-          <li>Logo sur une ligne</li>
-          <li>Responsive PC/mobile amélioré</li>
-        </ul>
+        <span class="changelog-badge new">New</span>
       </div>
+      <ul class="changelog-list">
+        <li>Page Proposer une carte</li>
+        <li>Page Infos & crédits</li>
+        <li>Refonte DA — identité bold Quipoquiz</li>
+        <li>Tuto au premier lancement</li>
+        <li>Swipe-to-dismiss sur les popups</li>
+        <li>Camembert des votes</li>
+        <li>Responsive PC amélioré</li>
+      </ul>
+    </div>
 
-      <div class="changelog-entry">
+    <div class="changelog-entry">
+      <div class="changelog-top">
         <span class="changelog-version">v1.1</span>
         <span class="changelog-date">Fév. 2025</span>
-        <span class="changelog-badge fix">FIX</span>
-        <ul class="changelog-list">
-          <li>Chargement photos Pexels optimisé</li>
-          <li>Correction du compteur de votes</li>
-          <li>Swipe tactile plus fluide sur iOS</li>
-        </ul>
+        <span class="changelog-badge fix">Fix</span>
       </div>
+      <ul class="changelog-list">
+        <li>Chargement photos Pexels optimisé</li>
+        <li>Correction du compteur de votes</li>
+        <li>Swipe tactile plus fluide sur iOS</li>
+      </ul>
+    </div>
 
-      <div class="changelog-entry">
+    <div class="changelog-entry">
+      <div class="changelog-top">
         <span class="changelog-version">v1.0</span>
         <span class="changelog-date">Jan. 2025</span>
-        <span class="changelog-badge new">NEW</span>
-        <ul class="changelog-list">
-          <li>Lancement de Surcôté 🎉</li>
-          <li>919 cartes, 18 catégories</li>
-          <li>Swipe ↑↓←→ avec feedback visuel</li>
-          <li>Photos via API Pexels</li>
-          <li>Résultats en temps réel (Supabase)</li>
-        </ul>
+        <span class="changelog-badge new">New</span>
       </div>
-
+      <ul class="changelog-list">
+        <li>Lancement 🎉 — 919 cartes, 18 catégories</li>
+        <li>Swipe ↑↓←→ avec feedback visuel</li>
+        <li>Photos via Pexels, votes via Supabase</li>
+      </ul>
     </div>
   </div>
 
   <!-- CRÉDITS -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>Crédits</h2></div>
-    <div class="info-block-body">
-      <div class="credit-row">
-        <span class="credit-role">Concept & design</span>
-        <span class="credit-name">Monsieur Jade</span>
-      </div>
-      <div class="credit-row">
-        <span class="credit-role">Développement</span>
-        <span class="credit-name">Monsieur Jade</span>
-      </div>
-      <div class="credit-row">
-        <span class="credit-role">Photos</span>
-        <span class="credit-name">Pexels</span>
-      </div>
-      <div class="credit-row">
-        <span class="credit-role">Base de données</span>
-        <span class="credit-name">Supabase</span>
-      </div>
-      <div class="credit-row">
-        <span class="credit-role">Inspiré de</span>
-        <span class="credit-name">Quipoquiz</span>
-      </div>
-      <div class="credit-row">
-        <span class="credit-role">Hébergement</span>
-        <span class="credit-name">GitHub Pages</span>
-      </div>
+  <div class="section">
+    <div class="section-title">Crédits</div>
+    <div class="credit-row">
+      <span class="credit-role">Concept & design</span>
+      <span class="credit-name">Monsieur Jade</span>
+    </div>
+    <div class="credit-row">
+      <span class="credit-role">Développement</span>
+      <span class="credit-name">Monsieur Jade</span>
+    </div>
+    <div class="credit-row">
+      <span class="credit-role">Photos</span>
+      <span class="credit-name">Pexels</span>
+    </div>
+    <div class="credit-row">
+      <span class="credit-role">Base de données</span>
+      <span class="credit-name">Supabase</span>
+    </div>
+    <div class="credit-row">
+      <span class="credit-role">Hébergement</span>
+      <span class="credit-name">GitHub Pages</span>
     </div>
   </div>
 
-  <!-- MENTIONS LÉGALES -->
-  <div class="info-block">
-    <div class="info-block-header"><h2>Mentions légales</h2></div>
-    <div class="info-block-body">
-      <p class="legal-text">
-        Application non commerciale. Les photos sont fournies par 
-        <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a> 
-        et sont soumises à leur licence respective.<br/><br/>
-        Les votes sont anonymes. Aucune donnée personnelle n'est collectée.<br/><br/>
-        © 2025 Monsieur Jade — 
-        <a href="https://github.com/monsieurjade/surcote" target="_blank" rel="noopener">GitHub</a>
-      </p>
-    </div>
+  <!-- LÉGAL -->
+  <div class="section">
+    <div class="section-title">Mentions légales</div>
+    <p class="legal-text">
+      Application non commerciale. Photos fournies par <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a>, soumises à leur licence respective. Les votes sont anonymes — aucune donnée personnelle n'est collectée.<br/><br/>
+      © 2025 Monsieur Jade — <a href="https://github.com/monsieurjade/surcote" target="_blank" rel="noopener">GitHub</a>
+    </p>
   </div>
 
-  <script>
-    // Catégories avec couleurs
-    const CATEGORIES = [
-      { name: 'Mode', color: '#FF3B30' },
-      { name: 'Food', color: '#FF9500' },
-      { name: 'Voyage', color: '#FFCC00' },
-      { name: 'Tech', color: '#007AFF' },
-      { name: 'Musique', color: '#5856D6' },
-      { name: 'Cinéma', color: '#AF52DE' },
-      { name: 'Sport', color: '#FF6B35' },
-      { name: 'Beauté', color: '#FF2D55' },
-      { name: 'Quotidien', color: '#32ADE6' },
-      { name: 'Animaux', color: '#30D158' },
-      { name: 'Actions', color: '#6C6C70' },
-      { name: 'Déco', color: '#64D2FF' },
-      { name: 'Nature', color: '#34C759' },
-      { name: 'Bien-être', color: '#00C7BE' },
-      { name: 'Créativité', color: '#FF375F' },
-      { name: 'Soirées', color: '#FFD60A' },
-      { name: 'Nostalgie', color: '#FF453A' },
-    ];
+</div>
 
-    const grid = document.getElementById('catGrid');
-    CATEGORIES.forEach(cat => {
-      const chip = document.createElement('div');
-      chip.className = 'cat-chip';
-      chip.textContent = cat.name;
-      chip.style.background = cat.color;
-      grid.appendChild(chip);
-    });
+<script>
+  const SUPABASE_URL = 'https://rgtwretpvwtkviqjxcfc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndHdyZXRwdnd0a3ZpcWp4Y2ZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODE0OTgsImV4cCI6MjA4OTA1NzQ5OH0.4LUYXGMhQQ39Ie8ixtz5nP6vPCnyWaaEjoPgLyvH5TY';
 
-    // Fetch vote count from Supabase
-    const SUPABASE_URL = 'https://rgtwretpvwtkviqjxcfc.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndHdyZXRwdnd0a3ZpcWp4Y2ZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODE0OTgsImV4cCI6MjA4OTA1NzQ5OH0.4LUYXGMhQQ39Ie8ixtz5nP6vPCnyWaaEjoPgLyvH5TY';
+  const CATEGORIES = [
+    { name: 'Mode',       color: '#FF3B30' },
+    { name: 'Food',       color: '#FF9500' },
+    { name: 'Voyage',     color: '#FFCC00' },
+    { name: 'Tech',       color: '#007AFF' },
+    { name: 'Musique',    color: '#5856D6' },
+    { name: 'Cinéma',     color: '#AF52DE' },
+    { name: 'Sport',      color: '#FF6B35' },
+    { name: 'Beauté',     color: '#FF2D55' },
+    { name: 'Quotidien',  color: '#32ADE6' },
+    { name: 'Animaux',    color: '#30D158' },
+    { name: 'Actions',    color: '#A8FF3E' },
+    { name: 'Déco',       color: '#64D2FF' },
+    { name: 'Nature',     color: '#34C759' },
+    { name: 'Bien-être',  color: '#00C7BE' },
+    { name: 'Créativité', color: '#FF375F' },
+    { name: 'Soirées',    color: '#FFD60A' },
+    { name: 'Nostalgie',  color: '#FF453A' },
+  ];
 
-    async function loadStats() {
-      try {
-        // Try to get total vote count
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/votes?select=count`, {
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Prefer': 'count=exact',
-            'Range': '0-0'
-          }
-        });
-        const contentRange = res.headers.get('Content-Range');
-        if (contentRange) {
-          const total = contentRange.split('/')[1];
-          if (total && total !== '*') {
-            const n = parseInt(total);
-            document.getElementById('statVotes').textContent =
-              n > 999 ? (n / 1000).toFixed(1) + 'k' : n.toString();
-          }
+  const grid = document.getElementById('catGrid');
+  CATEGORIES.forEach(cat => {
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip';
+    chip.textContent = cat.name;
+    chip.style.background = cat.color;
+    grid.appendChild(chip);
+  });
+
+  async function loadStats() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/votes?select=count`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'count=exact',
+          'Range': '0-0'
         }
-      } catch(e) {
-        // silently fail
+      });
+      const range = res.headers.get('Content-Range');
+      if (range) {
+        const total = parseInt(range.split('/')[1]);
+        if (!isNaN(total)) {
+          document.getElementById('statVotes').textContent =
+            total > 9999 ? (total / 1000).toFixed(1) + 'k' : total.toString();
+        }
       }
-    }
-    loadStats();
-  </script>
+    } catch(e) {}
+  }
+  loadStats();
+</script>
 </body>
 </html>
