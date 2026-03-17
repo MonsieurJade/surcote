@@ -165,12 +165,14 @@
       color: #fff;
       letter-spacing: -0.5px;
     }
-    .hint-sur  { background: rgba(216,90,48,0.45); }
-    .hint-sous { background: rgba(59,140,78,0.45); }
-    .hint-cote { background: rgba(80,80,200,0.45); }
-    .show-sur  .hint-sur  { opacity: 1; }
-    .show-sous .hint-sous { opacity: 1; }
-    .show-cote .hint-cote { opacity: 1; }
+    .hint-sur    { background: rgba(216,90,48,0.45); }
+    .hint-sous   { background: rgba(59,140,78,0.45); }
+    .hint-cote   { background: rgba(80,80,200,0.45); }
+    .hint-passer { background: rgba(0,0,0,0.35); }
+    .show-sur    .hint-sur    { opacity: 1; }
+    .show-sous   .hint-sous   { opacity: 1; }
+    .show-cote   .hint-cote   { opacity: 1; }
+    .show-passer .hint-passer { opacity: 1; }
 
     /* LABEL GAUCHE/DROITE sur la photo */
     .side-label {
@@ -190,7 +192,7 @@
     .side-label.right { right: 14px; }
     .side-label.left  { left: 14px; }
     .card-zone.pulling-right .side-label.right { color: #fff; }
-    .card-zone.pulling-left  .side-label.left  { color: #fff; }
+    .card-zone.pulling-left  .side-label.left  { color: rgba(255,255,255,0.9); }
 
     /* BLOC TEXTE BAS — couleur thème */
     .card-info {
@@ -422,9 +424,10 @@
         <div class="card-loading" id="cardLoading"><div class="spinner"></div></div>
         <div class="hint-over hint-sur">↑ Surcôté</div>
         <div class="hint-over hint-sous">↓ Sous-côté</div>
-        <div class="hint-over hint-cote">← Côté →</div>
+        <div class="hint-over hint-cote">Côté →</div>
+        <div class="hint-over hint-passer">← Passer</div>
         <div class="side-label right">Côté →</div>
-        <div class="side-label left">← Côté</div>
+        <div class="side-label left">← Passer</div>
         <div class="photo-bottom-label">Sous-côté ↓</div>
       </div>
       <div class="card-info" id="frontInfo">
@@ -709,36 +712,69 @@ function onMove(x, y) {
   const absX = Math.abs(curX), absY = Math.abs(curY);
 
   if (absX > absY) {
-    // Mouvement horizontal → Côté
     front.style.transform = `translateX(${curX}px) rotate(${curX * 0.04}deg)`;
-    front.classList.toggle('show-cote', absX > 60);
-    front.classList.remove('show-sur', 'show-sous');
-    zone.classList.toggle('pulling-right', curX > 60);
-    zone.classList.toggle('pulling-left', curX < -60);
-    zone.classList.remove('pulling-up', 'pulling-down');
+    if (curX > 60) {
+      front.classList.add('show-cote');
+      front.classList.remove('show-passer', 'show-sur', 'show-sous');
+      zone.classList.add('pulling-right');
+      zone.classList.remove('pulling-left', 'pulling-up', 'pulling-down');
+    } else if (curX < -60) {
+      front.classList.add('show-passer');
+      front.classList.remove('show-cote', 'show-sur', 'show-sous');
+      zone.classList.add('pulling-left');
+      zone.classList.remove('pulling-right', 'pulling-up', 'pulling-down');
+    } else {
+      front.classList.remove('show-cote', 'show-passer');
+      zone.classList.remove('pulling-right', 'pulling-left');
+    }
   } else {
-    // Mouvement vertical → Sur / Sous
     front.style.transform = `translateY(${curY}px) rotate(${curY * 0.012}deg)`;
     front.classList.toggle('show-sur',  curY < -70);
     front.classList.toggle('show-sous', curY > 70);
-    front.classList.remove('show-cote');
+    front.classList.remove('show-cote', 'show-passer');
     zone.classList.toggle('pulling-up',   curY < -70);
     zone.classList.toggle('pulling-down', curY > 70);
     zone.classList.remove('pulling-right', 'pulling-left');
   }
 }
+
 function onEnd() {
   if (!dragging) return; dragging = false;
   const absX = Math.abs(curX), absY = Math.abs(curY);
   if (absX > absY) {
-    if (absX > 100) swipeCard('cote', curX > 0 ? 500 : -500, 0);
-    else reset();
+    if (curX > 100) {
+      // Swipe droite = Côté
+      swipeCard('cote', 500, 0);
+    } else if (curX < -100) {
+      // Swipe gauche = Passer (pas de vote, juste avancer)
+      passer();
+    } else {
+      reset();
+    }
   } else {
     if (curY < -110)     swipeCard('sur',  0, -700);
     else if (curY > 110) swipeCard('sous', 0,  700);
     else reset();
   }
   curX = 0; curY = 0;
+}
+
+function passer() {
+  front.style.transition = 'transform 0.4s cubic-bezier(.25,.8,.25,1), opacity 0.4s';
+  front.style.transform  = 'translateX(-500px) rotate(-12deg)';
+  front.style.opacity    = '0';
+  front.classList.remove('show-sur', 'show-sous', 'show-cote', 'show-passer');
+  zone.classList.remove('pulling-up', 'pulling-down', 'pulling-right', 'pulling-left');
+  front.style.pointerEvents = 'none';
+  // Pas de vote — on avance juste
+  idx++;
+  setTimeout(() => {
+    front.style.transition = 'none';
+    front.style.transform  = '';
+    front.style.opacity    = '1';
+    front.style.pointerEvents = '';
+    loadCards();
+  }, 420);
 }
 function reset() {
   front.style.transition = 'transform 0.3s cubic-bezier(.25,.8,.25,1)';
