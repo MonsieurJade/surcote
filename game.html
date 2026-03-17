@@ -24,28 +24,69 @@
       transition: background 0.5s ease;
     }
 
+
     .app-wrapper {
       width: 100%;
       height: 100dvh;
-      display: flex;
-      justify-content: center;
-      background: inherit;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 430px;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
       background: var(--cat-bg);
       transition: background 0.5s ease;
     }
 
-    @media (min-width: 480px) {
-      .app { box-shadow: 6px 0 0 #111, -6px 0 0 #111; }
+    .app {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--cat-bg);
+      transition: background 0.5s ease;
+    }
+
+    /* ── DESKTOP : header + pills full width, carte centrée ── */
+    @media (min-width: 600px) {
+
+      .header {
+        padding-left: max(1.25rem, calc(50% - 240px));
+        padding-right: max(1.25rem, calc(50% - 240px));
+      }
+
+      .cats {
+        padding-left: max(1.25rem, calc(50% - 240px));
+      }
+
+      /* Bordures verticales qui délimitent la carte */
+      .card-zone::before,
+      .card-zone::after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0;
+        width: 3px;
+        background: #111;
+        z-index: 5;
+        pointer-events: none;
+      }
+      .card-zone::before { left: calc(50% - 240px); }
+      .card-zone::after  { right: calc(50% - 240px); }
+
+      /* Carte centrée entre les bordures */
+      .card {
+        left:  calc(50% - 240px);
+        right: calc(50% - 240px);
+        width: auto;
+      }
+
+      /* Bloc nom/catégorie centré aussi */
+      .card-info {
+        padding-left:  max(1.25rem, calc(50% - 228px));
+        padding-right: max(1.25rem, calc(50% - 228px));
+      }
+
+      /* Panels résultat et tuto alignés sur la carte */
+      .result-panel,
+      .tuto-panel {
+        left:  calc(50% - 240px);
+        right: calc(50% - 240px);
+      }
     }
 
     /* ── HEADER ── */
