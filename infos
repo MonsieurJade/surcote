@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infos – Surcôté</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body.infos-page {
+      min-height: 100dvh;
+      background-color: #5856D6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    .page-header {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-back {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #111;
+      background: white;
+      border: 3px solid #111;
+      padding: 0.3em 0.6em;
+      box-shadow: 4px 4px 0 #111;
+      text-decoration: none;
+      line-height: 1;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn-back:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+
+    .page-title {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: clamp(1.6rem, 7vw, 2.4rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #111;
+      line-height: 1;
+    }
+
+    /* ─ SECTION BLOCK ─ */
+    .info-block {
+      width: 100%;
+      max-width: 560px;
+      background: white;
+      border: 4px solid #111;
+      box-shadow: 8px 8px 0 #111;
+      margin-bottom: 1.5rem;
+    }
+
+    .info-block-header {
+      background: #111;
+      padding: 0.5em 1em;
+    }
+    .info-block-header h2 {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: white;
+      margin: 0;
+    }
+
+    .info-block-body {
+      padding: 1.25rem 1.25rem;
+    }
+
+    /* ─ ABOUT ─ */
+    .about-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: #111;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .stat-box {
+      border: 3px solid #111;
+      padding: 0.6em 0.4em;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #111;
+      line-height: 1;
+      display: block;
+    }
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #555;
+      display: block;
+      margin-top: 0.2em;
+    }
+
+    /* ─ SWIPE GUIDE ─ */
+    .swipe-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6em 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .swipe-row:last-child { border-bottom: none; }
+
+    .swipe-icon {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      min-width: 40px;
+      text-align: center;
+      background: #111;
+      color: white;
+      padding: 0.2em 0.3em;
+    }
+
+    .swipe-desc {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      color: #111;
+      line-height: 1.4;
+    }
+    .swipe-desc strong {
+      font-weight: 700;
+      display: block;
+    }
+
+    /* ─ CHANGELOG ─ */
+    .changelog-entry {
+      padding: 0.8em 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .changelog-entry:last-child { border-bottom: none; }
+
+    .changelog-version {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #111;
+      letter-spacing: 0.05em;
+    }
+    .changelog-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: #888;
+      margin-left: 0.5em;
+    }
+    .changelog-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.15em 0.5em;
+      border: 2px solid #111;
+      margin-left: 0.4em;
+      vertical-align: middle;
+    }
+    .changelog-badge.new { background: #34C759; }
+    .changelog-badge.fix { background: #FF9500; }
+    .changelog-badge.update { background: #007AFF; color: white; border-color: #005AC1; }
+
+    .changelog-list {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #333;
+      margin: 0.4em 0 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .changelog-list li::before {
+      content: '→ ';
+      font-weight: 700;
+      color: #111;
+    }
+
+    /* ─ CREDITS ─ */
+    .credit-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.45em 0;
+      border-bottom: 2px solid #f0f0f0;
+      gap: 0.5rem;
+    }
+    .credit-row:last-child { border-bottom: none; }
+
+    .credit-role {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #888;
+      flex-shrink: 0;
+    }
+    .credit-name {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      color: #111;
+      text-align: right;
+    }
+
+    /* ─ CATEGORIES GRID ─ */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .cat-chip {
+      font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #111;
+      border: 2px solid #111;
+      padding: 0.35em 0.5em;
+      text-align: center;
+      line-height: 1;
+    }
+
+    /* ─ LEGAL ─ */
+    .legal-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      line-height: 1.7;
+      color: #555;
+    }
+    .legal-text a {
+      color: #111;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="infos-page">
+
+  <div class="page-header">
+    <a href="index.html" class="btn-back">←</a>
+    <div class="page-title">ℹ Infos</div>
+  </div>
+
+  <!-- À PROPOS -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>À propos</h2></div>
+    <div class="info-block-body">
+      <p class="about-text">
+        <strong>Surcôté</strong> est un jeu de swipe qui te pose une question simple :<br/>
+        cette chose est-elle <em>surcôtée</em>, <em>sous-côtée</em>, ou juste <em>comme il faut</em> ?
+      </p>
+      <p class="about-text" style="margin-top:0.8rem">
+        Glisse, vote, et vois si le monde est d'accord avec toi.
+      </p>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <span class="stat-num" id="statItems">919</span>
+          <span class="stat-label">Cartes</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">18</span>
+          <span class="stat-label">Catégories</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num" id="statVotes">—</span>
+          <span class="stat-label">Votes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMENT JOUER -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>Comment jouer</h2></div>
+    <div class="info-block-body">
+      <div class="swipe-row">
+        <div class="swipe-icon">↑</div>
+        <div class="swipe-desc">
+          <strong>Swipe vers le haut</strong>
+          Surcôté — t'en entends trop parler
+        </div>
+      </div>
+      <div class="swipe-row">
+        <div class="swipe-icon">↓</div>
+        <div class="swipe-desc">
+          <strong>Swipe vers le bas</strong>
+          Sous-côté — ça mérite plus de respect
+        </div>
+      </div>
+      <div class="swipe-row">
+        <div class="swipe-icon" style="background:#34C759">→</div>
+        <div class="swipe-desc">
+          <strong>Swipe à droite</strong>
+          Côté — ni trop, ni trop peu
+        </div>
+      </div>
+      <div class="swipe-row">
+        <div class="swipe-icon" style="background:#888">←</div>
+        <div class="swipe-desc">
+          <strong>Swipe à gauche</strong>
+          Passer — je sais pas / je m'en fiche
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATÉGORIES -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>Catégories</h2></div>
+    <div class="info-block-body">
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+  </div>
+
+  <!-- NOTES DE MISE À JOUR -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>Notes de mise à jour</h2></div>
+    <div class="info-block-body">
+
+      <div class="changelog-entry">
+        <span class="changelog-version">v1.2</span>
+        <span class="changelog-date">Mars 2025</span>
+        <span class="changelog-badge new">NEW</span>
+        <ul class="changelog-list">
+          <li>Page PROPOSER : soumets ta propre carte</li>
+          <li>Page INFOS : crédits & changelog</li>
+          <li>Menu : fond couleur aléatoire par thème</li>
+          <li>Logo sur une ligne</li>
+          <li>Responsive PC/mobile amélioré</li>
+        </ul>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-version">v1.1</span>
+        <span class="changelog-date">Fév. 2025</span>
+        <span class="changelog-badge fix">FIX</span>
+        <ul class="changelog-list">
+          <li>Chargement photos Pexels optimisé</li>
+          <li>Correction du compteur de votes</li>
+          <li>Swipe tactile plus fluide sur iOS</li>
+        </ul>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-version">v1.0</span>
+        <span class="changelog-date">Jan. 2025</span>
+        <span class="changelog-badge new">NEW</span>
+        <ul class="changelog-list">
+          <li>Lancement de Surcôté 🎉</li>
+          <li>919 cartes, 18 catégories</li>
+          <li>Swipe ↑↓←→ avec feedback visuel</li>
+          <li>Photos via API Pexels</li>
+          <li>Résultats en temps réel (Supabase)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CRÉDITS -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>Crédits</h2></div>
+    <div class="info-block-body">
+      <div class="credit-row">
+        <span class="credit-role">Concept & design</span>
+        <span class="credit-name">Monsieur Jade</span>
+      </div>
+      <div class="credit-row">
+        <span class="credit-role">Développement</span>
+        <span class="credit-name">Monsieur Jade</span>
+      </div>
+      <div class="credit-row">
+        <span class="credit-role">Photos</span>
+        <span class="credit-name">Pexels</span>
+      </div>
+      <div class="credit-row">
+        <span class="credit-role">Base de données</span>
+        <span class="credit-name">Supabase</span>
+      </div>
+      <div class="credit-row">
+        <span class="credit-role">Inspiré de</span>
+        <span class="credit-name">Quipoquiz</span>
+      </div>
+      <div class="credit-row">
+        <span class="credit-role">Hébergement</span>
+        <span class="credit-name">GitHub Pages</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENTIONS LÉGALES -->
+  <div class="info-block">
+    <div class="info-block-header"><h2>Mentions légales</h2></div>
+    <div class="info-block-body">
+      <p class="legal-text">
+        Application non commerciale. Les photos sont fournies par 
+        <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a> 
+        et sont soumises à leur licence respective.<br/><br/>
+        Les votes sont anonymes. Aucune donnée personnelle n'est collectée.<br/><br/>
+        © 2025 Monsieur Jade — 
+        <a href="https://github.com/monsieurjade/surcote" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Catégories avec couleurs
+    const CATEGORIES = [
+      { name: 'Mode', color: '#FF3B30' },
+      { name: 'Food', color: '#FF9500' },
+      { name: 'Voyage', color: '#FFCC00' },
+      { name: 'Tech', color: '#007AFF' },
+      { name: 'Musique', color: '#5856D6' },
+      { name: 'Cinéma', color: '#AF52DE' },
+      { name: 'Sport', color: '#FF6B35' },
+      { name: 'Beauté', color: '#FF2D55' },
+      { name: 'Quotidien', color: '#32ADE6' },
+      { name: 'Animaux', color: '#30D158' },
+      { name: 'Actions', color: '#6C6C70' },
+      { name: 'Déco', color: '#64D2FF' },
+      { name: 'Nature', color: '#34C759' },
+      { name: 'Bien-être', color: '#00C7BE' },
+      { name: 'Créativité', color: '#FF375F' },
+      { name: 'Soirées', color: '#FFD60A' },
+      { name: 'Nostalgie', color: '#FF453A' },
+    ];
+
+    const grid = document.getElementById('catGrid');
+    CATEGORIES.forEach(cat => {
+      const chip = document.createElement('div');
+      chip.className = 'cat-chip';
+      chip.textContent = cat.name;
+      chip.style.background = cat.color;
+      grid.appendChild(chip);
+    });
+
+    // Fetch vote count from Supabase
+    const SUPABASE_URL = 'https://rgtwretpvwtkviqjxcfc.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJndHdyZXRwdnd0a3ZpcWp4Y2ZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0ODE0OTgsImV4cCI6MjA4OTA1NzQ5OH0.4LUYXGMhQQ39Ie8ixtz5nP6vPCnyWaaEjoPgLyvH5TY';
+
+    async function loadStats() {
+      try {
+        // Try to get total vote count
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/votes?select=count`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'count=exact',
+            'Range': '0-0'
+          }
+        });
+        const contentRange = res.headers.get('Content-Range');
+        if (contentRange) {
+          const total = contentRange.split('/')[1];
+          if (total && total !== '*') {
+            const n = parseInt(total);
+            document.getElementById('statVotes').textContent =
+              n > 999 ? (n / 1000).toFixed(1) + 'k' : n.toString();
+          }
+        }
+      } catch(e) {
+        // silently fail
+      }
+    }
+    loadStats();
+  </script>
+</body>
+</html>
