@@ -17,6 +17,15 @@
       transition: background-color 0.4s ease;
     }
 
+    /* Conteneur centré — cap à 430px comme le game */
+    .menu-inner {
+      width: 100%;
+      max-width: 430px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .menu-logo {
       font-family: 'Black Han Sans', 'Anton', Impact, sans-serif;
       font-size: clamp(3.2rem, 14vw, 7rem);
@@ -120,6 +129,7 @@
 </head>
 <body class="menu-page">
 
+<div class="menu-inner">
   <div class="menu-logo">SURCÔTÉ</div>
   <div class="menu-tagline">Surcôté ou sous-côté ?</div>
 
@@ -132,6 +142,7 @@
   <button class="btn-shuffle" onclick="randomColor()">🎲 Autre couleur</button>
 
   <div class="menu-footer">919 cartes · 18 catégories</div>
+</div>
 
   <script>
     // Couleurs des thèmes (même palette que les catégories)
